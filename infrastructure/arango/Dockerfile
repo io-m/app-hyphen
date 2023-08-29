@@ -1,0 +1,7 @@
+FROM arangodb/arangodb:3.11.0
+
+# Expose the necessary port
+EXPOSE 8529
+
+# Set the environment variable
+ENV ARANGO_ROOT_PASSWORD openSesame
