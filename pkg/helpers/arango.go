@@ -3,6 +3,7 @@ package helpers
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/arangodb/go-driver"
@@ -18,22 +19,26 @@ func CreateArangoConnection() (driver.Database, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create connection: %w", err)
 	}
+
 	c, err := driver.NewClient(driver.ClientConfig{
 		Connection:     conn,
-		Authentication: driver.BasicAuthentication(constants.ARANGO_USERNAME, os.Getenv(constants.ARANGO_PASSWORD)),
+		Authentication: driver.BasicAuthentication(os.Getenv(constants.ARANGO_USERNAME), os.Getenv(constants.ARANGO_PASSWORD)),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client %w", err)
 	}
 	ctx := context.Background()
+	customersCollectionExists, _ := c.DatabaseExists(ctx, os.Getenv(constants.ARANGO_DB_NAME))
+	if !customersCollectionExists {
+		log.Print("Does not exists ...")
+		if _, err := c.CreateDatabase(ctx, os.Getenv(constants.ARANGO_DB_NAME), nil); err != nil {
+			return nil, fmt.Errorf("failed to create database %s: %w", constants.ARANGO_DB_NAME, err)
+		}
+	}
 
-	// if _, err := c.CreateDatabase(ctx, config.HyphenArangoDBName, nil); err != nil {
-	// 	return nil, fmt.Errorf("failed to create database %s: %w", config.HyphenArangoDBName, err)
-	// }
-
-	arangoDriver, err := c.Database(ctx, constants.ARANGO_DB_NAME)
+	arangoDriver, err := c.Database(ctx, os.Getenv(constants.ARANGO_DB_NAME))
 	if err != nil {
-		return nil, fmt.Errorf("failed to obtain database %s: %w", constants.ARANGO_DB_NAME, err)
+		return nil, fmt.Errorf("failed to obtain database %s: %w", os.Getenv(constants.ARANGO_DB_NAME), err)
 	}
 	return arangoDriver, nil
 }

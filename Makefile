@@ -4,7 +4,7 @@ run:
 	go run ./cmd/main.go
 
 arango-up:
-	docker-compose -f infrastructure/arango/docker-compose.yml up
+	docker-compose -f docker-compose.yml up
 
 arango-down:
-	docker-compose -f infrastructure/arango/docker-compose.yml down
+	docker-compose -f docker-compose.yml down

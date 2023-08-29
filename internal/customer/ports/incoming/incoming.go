@@ -3,13 +3,15 @@ package customer_incoming
 import (
 	"context"
 
+	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
 )
 
 type ICustomerIngoing interface {
-	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (any, error)
-	GetAllCustomers(ctx context.Context) (any, error)
-	GetCustomerById(ctx context.Context, bookId string) (any, error)
-	UpdateCustomer(ctx context.Context, bookId string, customerRequest *customer_objects.CustomerRequest) (any, error)
-	DeleteCustomerById(ctx context.Context, bookId string) (any, error)
+	ValidateCustomerPassword(customerRequest *customer_objects.CustomerRequest) error
+	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)
+	GetCustomerById(ctx context.Context, bookId string) (*customer.Customer, error)
+	UpdateCustomer(ctx context.Context, bookId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+	DeleteCustomerById(ctx context.Context, bookId string) (string, error)
 }
