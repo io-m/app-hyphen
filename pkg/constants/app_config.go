@@ -9,8 +9,8 @@ const (
 	RUNNING_ENV                            = "ENV"
 	DEVELOPMENT                            = "DEV"
 	PRODUCTION                             = "PROD"
-	DEV_CONFIG_FILE          string        = "./dev-app.env"
-	PROD_CONFIG_FILE         string        = "./app.env"
+	DEV_CONFIG_FILE          string        = "./infrastructure/dev.env"
+	PROD_CONFIG_FILE         string        = "./.env"
 	PASETO                   Authenticator = "paseto"
 	JWT                      Authenticator = "jwt"
 	ACCESS_TOKEN_DURATION    time.Duration = 5 * time.Minute
