@@ -7,6 +7,15 @@ import (
 	"github.com/io-m/app-hyphen/pkg/tokens"
 )
 
+type AuthorizationLevel string
+
+const (
+	CUSTOMER AuthorizationLevel = "CUSTOMER"
+	PUBLIC   AuthorizationLevel = "PUBLIC"
+	PROVIDER AuthorizationLevel = "PROVIDER"
+	SUDO     AuthorizationLevel = "SUDO"
+)
+
 type IAuthenticator interface {
 	GenerateTokens(claims *tokens.Claims) (string, string, error)
 	VerifyToken(token string) (*tokens.Claims, error)

@@ -1,0 +1,8 @@
+package constants
+
+const (
+	ARANGO_ENDPOINTS string = "ARANGO_ENDPOINTS"
+	ARANGO_PASSWORD  string = "ARANGO_PASSWORD"
+	ARANGO_DB_NAME   string = "ARANGO_DB_NAME"
+	ARANGO_USERNAME  string = "ARANGO_USERNAME"
+)
