@@ -6,16 +6,16 @@ import (
 	"github.com/google/uuid"
 	address "github.com/io-m/app-hyphen/internal/address/domain/entity"
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
-	"github.com/io-m/app-hyphen/pkg/types"
+	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 type CustomerRequest struct {
-	FirstName string                   `json:"first_name"`
-	LastName  string                   `json:"last_name"`
-	Email     string                   `json:"email"`
-	Password  string                   `json:"password"`
-	Address   address.Address          `json:"address"`
-	Role      types.AuthorizationLevel `json:"role"`
+	FirstName string                    `json:"first_name"`
+	LastName  string                    `json:"last_name"`
+	Email     string                    `json:"email"`
+	Password  string                    `json:"password"`
+	Address   address.Address           `json:"address"`
+	Role      tokens.AuthorizationLevel `json:"role"`
 }
 
 type LoginCustomerRequest struct {
@@ -31,14 +31,14 @@ type LoginCustomerResponse struct {
 }
 
 type CustomerResponse struct {
-	ID        string                   `json:"id"`
-	FirstName string                   `json:"first_name,omitempty"`
-	LastName  string                   `json:"last_name,omitempty"`
-	Email     string                   `json:"email,omitempty"`
-	Address   address.Address          `json:"address,omitempty"`
-	Role      types.AuthorizationLevel `json:"role,omitempty"`
-	CreatedAt string                   `json:"created_at,omitempty"`
-	UpdatedAt *string                  `json:"updated_at,omitempty"`
+	ID        string                    `json:"id"`
+	FirstName string                    `json:"first_name,omitempty"`
+	LastName  string                    `json:"last_name,omitempty"`
+	Email     string                    `json:"email,omitempty"`
+	Address   address.Address           `json:"address,omitempty"`
+	Role      tokens.AuthorizationLevel `json:"role,omitempty"`
+	CreatedAt string                    `json:"created_at,omitempty"`
+	UpdatedAt *string                   `json:"updated_at,omitempty"`
 }
 
 // MapCreateCustomerRequestToCustomer receives CustomerRequest and makes full Customer out of it in order to save it into DB

@@ -4,35 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	"aidanwoods.dev/go-paseto"
-	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
-
-type Claims struct {
-	ClaimID   uuid.UUID `json:"jti"`
-	SubjectID string    `json:"sub"`
-	IssuedAt  time.Time `json:"iat"`
-	ExpiredAt time.Time `json:"exp"`
-	// Roles     []entities.AuthorizationLevel `json:"roles,omitempty"`
-}
-
-func NewClaims(subjectID string /*role entities.AuthorizationLevel,*/, duration time.Duration) (*Claims, error) {
-	claimID, err := uuid.NewRandom()
-	if err != nil {
-		return nil, err
-	}
-	claims := &Claims{
-		ClaimID:   claimID,
-		SubjectID: subjectID,
-		IssuedAt:  time.Now().UTC(),
-		ExpiredAt: time.Now().Add(duration).UTC(),
-		// Roles:     []entities.AuthorizationLevel{role},
-	}
-	return claims, nil
-}
 
 type pasetoProtector struct {
 	token                 paseto.Token
