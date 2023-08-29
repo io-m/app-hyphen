@@ -1,0 +1,1 @@
+package provider_memory_adapter

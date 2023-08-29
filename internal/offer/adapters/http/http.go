@@ -1,0 +1,1 @@
+package offer_http_adapter

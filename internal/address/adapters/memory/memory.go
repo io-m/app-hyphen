@@ -1,0 +1,1 @@
+package address_memory_adapter
