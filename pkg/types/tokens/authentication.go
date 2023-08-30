@@ -1,12 +1,18 @@
 package tokens
 
 import (
+	"context"
 	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
+
+type ITokens interface {
+	SaveRefreshToken(ctx context.Context, refreshToken string) (string, error)
+	RetrieveAndVerifyRefreshToken(ctx context.Context, refreshToken string) (string, error)
+}
 
 type AuthorizationLevel string
 
@@ -34,7 +40,7 @@ func NewClaims(subjectID string /*role entities.AuthorizationLevel,*/, duration 
 		ClaimID:   claimID,
 		SubjectID: subjectID,
 		IssuedAt:  time.Now().UTC(),
-		ExpiredAt: time.Now().Add(duration).UTC(),
+		ExpiredAt: time.Now().Add(constants.ACCESS_TOKEN_DURATION).UTC(),
 		// Roles:     []entities.AuthorizationLevel{role},
 	}
 	return claims, nil

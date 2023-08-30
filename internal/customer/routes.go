@@ -1,18 +1,18 @@
-package customer_common
+package customer_routes
 
 import (
 	"github.com/arangodb/go-driver"
 	"github.com/go-chi/chi/v5"
-	customer_arango_adapter "github.com/io-m/app-hyphen/internal/customer/adapters/database"
+	"github.com/go-redis/redis/v8"
+	customer_db_adapter "github.com/io-m/app-hyphen/internal/customer/adapters/database"
 	customer_http_adapter "github.com/io-m/app-hyphen/internal/customer/adapters/http"
 	customer_logic "github.com/io-m/app-hyphen/internal/customer/logic"
 	"github.com/io-m/app-hyphen/pkg/middlewares"
 	"github.com/io-m/app-hyphen/pkg/types"
 )
 
-func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Database) {
-	// TODO: Set Redis adapter and pass it to NewCustomerDB
-	dbAdapter := customer_arango_adapter.NewCustomerDB(arangoDriver, struct{}{})
+func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Database, redisClient *redis.Client) {
+	dbAdapter := customer_db_adapter.NewCustomerOutgoing(arangoDriver, redisClient)
 	customerLogic := customer_logic.NewCustomerLogic(dbAdapter)
 	customerHandler := customer_http_adapter.NewCustomerRESTHandler(customerLogic)
 

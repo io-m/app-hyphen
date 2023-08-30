@@ -8,17 +8,29 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	customer_common "github.com/io-m/app-hyphen/internal/customer"
+	hyphen_arango "github.com/io-m/app-hyphen/pkg/arango"
 	"github.com/io-m/app-hyphen/pkg/constants"
-	"github.com/io-m/app-hyphen/pkg/helpers"
+	hyphen_redis "github.com/io-m/app-hyphen/pkg/redis"
 	"github.com/io-m/app-hyphen/pkg/types"
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 func SetAndRun() *chi.Mux {
-	arangoDriver, err := helpers.CreateArangoConnection()
+	arangoDriver, err := hyphen_arango.CreateArangoConnection()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	redisClient, err := hyphen_redis.CreateRedisConnection()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	// Deferring Redis conn closing
+	defer func() {
+		if err := redisClient.Close(); err != nil {
+			log.Fatal(err.Error())
+		}
+	}()
+
 	authenticator := tokens.NewAuthenticator()
 	mux := chi.NewRouter()
 	mux.Use(cors.Handler(cors.Options{
@@ -37,7 +49,7 @@ func SetAndRun() *chi.Mux {
 			Authenticator: authenticator,
 		}
 		/* ROUTES COME HERE*/
-		customer_common.SetAndRunCustomerRoutes(config, arangoDriver)
+		customer_common.SetAndRunCustomerRoutes(config, arangoDriver, redisClient)
 	})
 
 	return mux

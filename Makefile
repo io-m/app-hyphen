@@ -3,8 +3,8 @@ run:
 	@echo "Running Main function..."
 	go run ./cmd/main.go
 
-arango-up:
+db-up:
 	docker-compose -f docker-compose.yml up
 
-arango-down:
+db-down:
 	docker-compose -f docker-compose.yml down

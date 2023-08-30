@@ -1,0 +1,6 @@
+package constants
+
+const (
+	REDIS_ADDRESS  = "REDIS_ADDRESS"
+	REDIS_PASSWORD = "REDIS_PASSWORD"
+)
