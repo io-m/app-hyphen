@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	customer_common "github.com/io-m/app-hyphen/internal/customer"
+	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
 	"github.com/io-m/app-hyphen/pkg/types"
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
@@ -18,11 +19,8 @@ func SetAndRun() *chi.Mux {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	authenticator := tokens.NewAuthenticator()
 	mux := chi.NewRouter()
-	config := &types.AppConfig{
-		Mux:           mux,
-		Authenticator: tokens.NewAuthenticator(),
-	}
 	mux.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://*", "https://*"},
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions},
@@ -33,7 +31,14 @@ func SetAndRun() *chi.Mux {
 	mux.Use(middleware.Heartbeat("/ping"))
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
-	customer_common.SetAndRunCustomerRoutes(config, arangoDriver)
+	mux.Route(constants.BASE_ROUTE, func(r chi.Router) {
+		config := &types.AppConfig{
+			Mux:           r,
+			Authenticator: authenticator,
+		}
+		/* ROUTES COME HERE*/
+		customer_common.SetAndRunCustomerRoutes(config, arangoDriver)
+	})
 
 	return mux
 }

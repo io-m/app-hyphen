@@ -6,6 +6,6 @@ import (
 )
 
 type AppConfig struct {
-	Mux           *chi.Mux
+	Mux           chi.Router
 	Authenticator tokens.IAuthenticator
 }
