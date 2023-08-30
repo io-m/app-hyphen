@@ -3,7 +3,6 @@ package tokens
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"aidanwoods.dev/go-paseto"
@@ -22,12 +21,11 @@ func NewPasetoProtector() *pasetoProtector {
 		token:                 paseto.NewToken(),
 		parser:                paseto.NewParser(),
 		accessTokenSecretKey:  []byte(os.Getenv(constants.ACCESS_TOKEN_SECRET_KEY)),
-		refreshTokenSecretKey: []byte(constants.REFRESH_TOKEN_SECRET_KEY),
+		refreshTokenSecretKey: []byte(os.Getenv(constants.REFRESH_TOKEN_SECRET_KEY)),
 	}
 }
 
 func (protector *pasetoProtector) VerifyToken(stringifiedToken string) (*Claims, error) {
-	log.Print("IN PASETO!!")
 	symmetricAccessTokenKey, err := paseto.V4SymmetricKeyFromBytes(protector.accessTokenSecretKey)
 	if err != nil {
 		return nil, fmt.Errorf("paseto could not generate V4Symmetric key for access token: %w", err)

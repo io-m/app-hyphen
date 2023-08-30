@@ -13,7 +13,7 @@ import (
 
 func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Database, redisClient *redis.Client) {
 	dbAdapter := customer_db_adapter.NewCustomerOutgoing(arangoDriver, redisClient)
-	customerLogic := customer_logic.NewCustomerLogic(dbAdapter)
+	customerLogic := customer_logic.NewCustomerLogic(dbAdapter, config.Authenticator)
 	customerHandler := customer_http_adapter.NewCustomerRESTHandler(customerLogic)
 
 	/* CUSTOMER ROUTES */
@@ -21,7 +21,7 @@ func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Databa
 		r.Get("/", customerHandler.GetAllCustomers)
 		r.Get("/{id}", customerHandler.GetCustomerById)
 		r.Post("/register", customerHandler.CreateCustomer)
-		// r.Post("/login", hyphen.Login)
+		r.Post("/login", customerHandler.LoginCustomer)
 
 		/// Authentication required
 		r.Route("/", func(r chi.Router) {

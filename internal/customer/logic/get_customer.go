@@ -9,6 +9,6 @@ import (
 func (cl *customerLogic) GetAllCustomers(ctx context.Context) ([]*customer.Customer, error) {
 	return nil, nil
 }
-func (cl *customerLogic) GetCustomerById(ctx context.Context, bookId string) (*customer.Customer, error) {
-	return nil, nil
+func (cl *customerLogic) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
+	return cl.customerOutgoing.GetCustomerById(ctx, customerId)
 }

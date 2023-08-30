@@ -5,9 +5,15 @@ import (
 
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
+	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 type ICustomerIngoing interface {
+	ICustomerUsecase
+	tokens.IAuthenticator
+}
+
+type ICustomerUsecase interface {
 	ValidateCustomerPassword(customerRequest *customer_objects.CustomerRequest) error
 	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
 	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)

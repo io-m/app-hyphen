@@ -6,13 +6,14 @@ import (
 
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
+	"github.com/io-m/app-hyphen/pkg/helpers"
 )
 
 func (db *customerOutgoing) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
 	// Perform AQL queries
 	// Query to create customer
 	query := "INSERT @customer INTO customers"
-	bindVars := map[string]interface{}{
+	bindVars := map[string]any{
 		"customer": customer,
 	}
 
@@ -30,9 +31,27 @@ func (db *customerOutgoing) GetAllCustomers(ctx context.Context) ([]*customer.Cu
 	return nil, nil
 }
 
-// TODO: implement ICustomerOutgoing interface for Arango
 func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
-	return nil, nil
+	query := `
+		FOR customer IN customers
+		FILTER customer.id == @customerId
+		RETURN customer
+  	`
+	bindVars := map[string]interface{}{
+		"customerId": customerId, // Replace with the actual customer ID
+	}
+
+	cursor, err := db.arango.Query(ctx, query, bindVars)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	defer cursor.Close()
+	customer, err := helpers.ReadSingleDocument[customer.Customer](ctx, cursor)
+	if err != nil {
+		return nil, err
+	}
+	return customer, nil
 }
 
 // TODO: implement ICustomerOutgoing interface for Arango

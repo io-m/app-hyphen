@@ -21,6 +21,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	key, _ := helpers.GenerateRandomKey(16)
+	log.Println("RANDOM::: ", key)
 	redisClient, err := hyphen_redis.CreateRedisConnection()
 	if err != nil {
 		log.Fatal(err.Error())

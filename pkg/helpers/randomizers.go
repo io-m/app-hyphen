@@ -1,7 +1,10 @@
 package helpers
 
 import (
+	crypto "crypto/rand"
+	"encoding/hex"
 	"fmt"
+
 	"math/rand"
 	"strings"
 	"time"
@@ -53,4 +56,14 @@ func RandomCurrency() string {
 // RandomEmail generates a random email
 func RandomEmail() string {
 	return fmt.Sprintf("%s@email.com", RandomString(6))
+}
+
+// GenerateRandomKey generates gibberish sequence of provided length
+func GenerateRandomKey(length int) (string, error) {
+	key := make([]byte, length)
+	_, err := crypto.Read(key)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(key), nil
 }

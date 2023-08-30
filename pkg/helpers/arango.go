@@ -42,3 +42,16 @@ func CreateArangoConnection() (driver.Database, error) {
 	}
 	return arangoDriver, nil
 }
+
+func ReadSingleDocument[T any](ctx context.Context, cursor driver.Cursor) (*T, error) {
+	var target T
+	for {
+		_, err := cursor.ReadDocument(ctx, &target)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, fmt.Errorf("failed to read document: %w", err)
+		}
+	}
+	return &target, nil
+}
