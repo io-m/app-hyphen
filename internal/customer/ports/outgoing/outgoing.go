@@ -13,4 +13,6 @@ type ICustomerOutgoing interface {
 	GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error)
 	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
 	DeleteCustomerById(ctx context.Context, customerId string) (string, error)
+	SaveRefreshToken(ctx context.Context, refreshToken string) (string, error)
+	RetrieveRefreshToken(ctx context.Context, refreshToken string) (string, error)
 }

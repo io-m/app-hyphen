@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -16,6 +17,7 @@ import (
 func MustAuthenticate(authenticator tokens.IAuthenticator) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("In middleware %s", r.Method)
 			// Perform authentication logic here
 			authorizationToken := r.Header.Get(constants.BEARER_TOKEN)
 			fields := strings.Fields(authorizationToken)
@@ -32,6 +34,7 @@ func MustAuthenticate(authenticator tokens.IAuthenticator) func(http.Handler) ht
 			// Create a new request with the updated context
 			r = r.WithContext(context.WithValue(r.Context(), constants.CLAIMS, claims))
 			// Authentication successful, call the next handler
+			log.Print("PASSED EVERYTHING :))) ", token)
 			next.ServeHTTP(w, r)
 		})
 	}
