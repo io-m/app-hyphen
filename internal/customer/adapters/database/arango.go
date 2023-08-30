@@ -3,7 +3,6 @@ package customer_db_adapter
 import (
 	"context"
 	"fmt"
-	"log"
 
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
@@ -12,7 +11,6 @@ import (
 func (db *customerOutgoing) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
 	// Perform AQL queries
 	// Query to create customer
-	log.Println("IN db STORE ---> ", customer)
 	query := "INSERT @customer INTO customers"
 	bindVars := map[string]interface{}{
 		"customer": customer,

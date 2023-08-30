@@ -1,36 +1,20 @@
 package di
 
 import (
-	"log"
 	"net/http"
 
+	"github.com/arangodb/go-driver"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-redis/redis/v8"
 	customer_common "github.com/io-m/app-hyphen/internal/customer"
-	hyphen_arango "github.com/io-m/app-hyphen/pkg/arango"
 	"github.com/io-m/app-hyphen/pkg/constants"
-	hyphen_redis "github.com/io-m/app-hyphen/pkg/redis"
 	"github.com/io-m/app-hyphen/pkg/types"
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
-func SetAndRun() *chi.Mux {
-	arangoDriver, err := hyphen_arango.CreateArangoConnection()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	redisClient, err := hyphen_redis.CreateRedisConnection()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	// Deferring Redis conn closing
-	defer func() {
-		if err := redisClient.Close(); err != nil {
-			log.Fatal(err.Error())
-		}
-	}()
-
+func SetAndRun(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
 	authenticator := tokens.NewAuthenticator()
 	mux := chi.NewRouter()
 	mux.Use(cors.Handler(cors.Options{
