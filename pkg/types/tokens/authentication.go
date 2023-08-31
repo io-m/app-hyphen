@@ -10,7 +10,7 @@ import (
 )
 
 type ITokens interface {
-	SaveRefreshToken(ctx context.Context, refreshToken string) (string, error)
+	SaveRefreshToken(ctx context.Context, refreshToken string) error
 	RetrieveAndVerifyRefreshToken(ctx context.Context, refreshToken string) (string, error)
 }
 

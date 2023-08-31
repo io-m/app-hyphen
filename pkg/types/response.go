@@ -5,3 +5,5 @@ type JSONResponse struct {
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
+
+type UrlParams map[string]string

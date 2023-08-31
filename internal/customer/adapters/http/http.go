@@ -2,7 +2,6 @@ package customer_http_adapter
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
@@ -13,10 +12,10 @@ import (
 )
 
 type CustomerRESTHandler struct {
-	customerIncoming customer_incoming.ICustomerIngoing
+	customerIncoming customer_incoming.ICustomerIncoming
 }
 
-func NewCustomerRESTHandler(customerIncoming customer_incoming.ICustomerIngoing) *CustomerRESTHandler {
+func NewCustomerRESTHandler(customerIncoming customer_incoming.ICustomerIncoming) *CustomerRESTHandler {
 	return &CustomerRESTHandler{
 		customerIncoming: customerIncoming,
 	}
@@ -37,9 +36,6 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 		helpers.ErrorResponse(w, fmt.Errorf("could not find customer: %w", err), http.StatusNotFound)
 		return
 	}
-	log.Println("Parsed customer ===> ", c)
-	log.Println("Found customer ===> ", customer)
-	log.Println("PASSWORD ---> ", customer.Password, "   Incoming password ===> ", c.Password)
 	if err := helpers.CheckPassword(c.Password, customer.Password); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("wrong password: %w", err), http.StatusBadRequest)
 		return
@@ -52,25 +48,26 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	// Here we need to save refresh token in Redis
-	// Something like -> ch.customerIncoming.SaveRefreshToken(ctx, refreshToken)
+	if err := ch.customerIncoming.SaveRefreshToken(r.Context(), refreshToken); err != nil {
+		helpers.ErrorResponse(w, fmt.Errorf("error while saving refresh token: %w", err), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Add(constants.ACCESS_TOKEN_HEADER, accessToken)
 	w.Header().Add(constants.REFRESH_TOKEN_HEADER, refreshToken)
 
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully logged in")
 }
 
-func (c *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequest](w, r)
-	// c, err := helpers.DecodePayload[*customer.Customer](w, r)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusInternalServerError)
 		return
 	}
-	if err := c.customerIncoming.ValidateCustomerPassword(customerRequest); err != nil {
+	if err := ch.customerIncoming.ValidateCustomerPassword(customerRequest); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
 		return
 	}
-
 	hashedPassword, err := helpers.HashPassword(customerRequest.Password)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not hash password: %w", err), http.StatusBadRequest)
@@ -78,22 +75,28 @@ func (c *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Requ
 	}
 	// customer.Role = entities.CUSTOMER
 	customerRequest.Password = hashedPassword
-	customer, err := c.customerIncoming.CreateCustomer(r.Context(), customerRequest)
+	customer, err := ch.customerIncoming.CreateCustomer(r.Context(), customerRequest)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not register this email: %w", err), http.StatusInternalServerError)
 		return
 	}
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully registered", http.StatusCreated)
 }
-func (c *CustomerRESTHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
+	//? Do we even need this one
+}
+func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Request) {
+	customerId := helpers.GetUrlParam(r, "id")
+	customer, err := ch.customerIncoming.GetCustomerById(r.Context(), customerId)
+	if err != nil {
+		helpers.ErrorResponse(w, fmt.Errorf("could not find customer with id %s: %w", customerId, err), http.StatusNotFound)
+		return
+	}
+	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer found", http.StatusOK)
+}
+func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 
 }
-func (c *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Request) {
-
-}
-func (c *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
-
-}
-func (c *CustomerRESTHandler) DeleteCustomerById(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) DeleteCustomerById(w http.ResponseWriter, r *http.Request) {
 
 }

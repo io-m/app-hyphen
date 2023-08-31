@@ -40,18 +40,17 @@ func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId stri
 	bindVars := map[string]interface{}{
 		"customerId": customerId, // Replace with the actual customer ID
 	}
-
 	cursor, err := db.arango.Query(ctx, query, bindVars)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
 	}
-
 	defer cursor.Close()
+
 	customer, err := helpers.ReadSingleDocument[customer.Customer](ctx, cursor)
 	if err != nil {
 		return nil, err
 	}
-	return customer, nil
+	return &customer, nil
 }
 
 // TODO: implement ICustomerOutgoing interface for Arango

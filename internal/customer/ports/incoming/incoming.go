@@ -8,16 +8,17 @@ import (
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
-type ICustomerIngoing interface {
+type ICustomerIncoming interface {
 	ICustomerUsecase
 	tokens.IAuthenticator
+	tokens.ITokens
 }
 
 type ICustomerUsecase interface {
 	ValidateCustomerPassword(customerRequest *customer_objects.CustomerRequest) error
 	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
 	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)
-	GetCustomerById(ctx context.Context, bookId string) (*customer.Customer, error)
-	UpdateCustomer(ctx context.Context, bookId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
-	DeleteCustomerById(ctx context.Context, bookId string) (string, error)
+	GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error)
+	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+	DeleteCustomerById(ctx context.Context, customerId string) (string, error)
 }

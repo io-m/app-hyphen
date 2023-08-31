@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
@@ -43,15 +44,18 @@ func CreateArangoConnection() (driver.Database, error) {
 	return arangoDriver, nil
 }
 
-func ReadSingleDocument[T any](ctx context.Context, cursor driver.Cursor) (*T, error) {
+func ReadSingleDocument[T any](ctx context.Context, cursor driver.Cursor) (T, error) {
 	var target T
-	for {
+	count := 0
+	for cursor.HasMore() {
 		_, err := cursor.ReadDocument(ctx, &target)
-		if driver.IsNoMoreDocuments(err) {
-			break
-		} else if err != nil {
-			return nil, fmt.Errorf("failed to read document: %w", err)
+		if err != nil {
+			return target, fmt.Errorf("failed to read document: %w", err)
 		}
+		count++
 	}
-	return &target, nil
+	if count < 1 {
+		return target, fmt.Errorf("document not found. expected type %v", reflect.TypeOf(target))
+	}
+	return target, nil
 }

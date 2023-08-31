@@ -8,13 +8,13 @@ import (
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
 
-func (db *customerOutgoing) SaveRefreshToken(ctx context.Context, refreshToken string) (string, error) {
+func (db *customerOutgoing) SaveRefreshToken(ctx context.Context, refreshToken string) error {
 	err := db.redis.Set(ctx, constants.REFRESH_TOKEN_KEY, refreshToken, constants.REFRESH_TOKEN_DURATION)
 	if err != nil {
-		return "", err.Err()
+		return err.Err()
 	}
 
-	return "success", nil
+	return nil
 }
 
 func (db *customerOutgoing) RetrieveAndVerifyRefreshToken(ctx context.Context, refreshToken string) (string, error) {
