@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/io-m/app-hyphen/internal/customer/adapters/database/queries"
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
 	"github.com/io-m/app-hyphen/pkg/helpers"
@@ -11,13 +12,11 @@ import (
 
 func (db *customerOutgoing) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
 	// Perform AQL queries
-	// Query to create customer
-	query := "INSERT @customer INTO customers"
 	bindVars := map[string]any{
 		"customer": customer,
 	}
 
-	_, err := db.arango.Query(ctx, query, bindVars)
+	_, err := db.arango.Query(ctx, queries.CREATE_CUSTOMER_QUERY, bindVars)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Customer: %w", err)
 	} else {
@@ -32,15 +31,10 @@ func (db *customerOutgoing) GetAllCustomers(ctx context.Context) ([]*customer.Cu
 }
 
 func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
-	query := `
-		FOR customer IN customers
-		FILTER customer.id == @customerId
-		RETURN customer
-  	`
 	bindVars := map[string]interface{}{
 		"customerId": customerId, // Replace with the actual customer ID
 	}
-	cursor, err := db.arango.Query(ctx, query, bindVars)
+	cursor, err := db.arango.Query(ctx, queries.GET_CUSTOMER_BY_ID_QUERY, bindVars)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
 	}
