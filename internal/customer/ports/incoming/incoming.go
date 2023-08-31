@@ -12,6 +12,7 @@ type ICustomerIncoming interface {
 	ICustomerUsecase
 	tokens.IAuthenticator
 	tokens.ITokens
+	tokens.ITokensIncoming
 }
 
 type ICustomerUsecase interface {

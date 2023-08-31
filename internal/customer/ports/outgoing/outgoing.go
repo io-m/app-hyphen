@@ -11,6 +11,7 @@ import (
 type ICustomerOutgoing interface {
 	ICustomerCrud
 	tokens.ITokens
+	tokens.ITokensOutgoing
 }
 
 type ICustomerCrud interface {

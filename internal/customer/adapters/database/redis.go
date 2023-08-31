@@ -8,22 +8,25 @@ import (
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
 
-func (db *customerOutgoing) SaveRefreshToken(ctx context.Context, refreshToken string) error {
-	err := db.redis.Set(ctx, constants.REFRESH_TOKEN_KEY, refreshToken, constants.REFRESH_TOKEN_DURATION)
+func (db *customerOutgoing) SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+	err := db.redis.HSet(ctx, customerId, "refreshToken", refreshToken)
+	// err := db.redis.Set(ctx, constants.REFRESH_TOKEN_KEY, refreshToken, constants.REFRESH_TOKEN_DURATION)
 	if err != nil {
 		return err.Err()
 	}
-
 	return nil
 }
 
-func (db *customerOutgoing) RetrieveAndVerifyRefreshToken(ctx context.Context, refreshToken string) (string, error) {
+func (db *customerOutgoing) RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error) {
 	rt, err := db.redis.Get(ctx, constants.REFRESH_TOKEN_KEY).Result()
 	if err != redis.Nil {
 		return "", fmt.Errorf("%s key does not exist: %w", constants.REFRESH_TOKEN_KEY, err)
 	} else if err != nil {
 		return "", err
 	}
-
 	return rt, nil
+}
+
+func (db *customerOutgoing) DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+	return nil
 }

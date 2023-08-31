@@ -48,7 +48,7 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	// Here we need to save refresh token in Redis
-	if err := ch.customerIncoming.SaveRefreshToken(r.Context(), refreshToken); err != nil {
+	if err := ch.customerIncoming.SaveRefreshToken(r.Context(), customer.ID, refreshToken); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while saving refresh token: %w", err), http.StatusInternalServerError)
 		return
 	}
@@ -92,6 +92,12 @@ func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Re
 		helpers.ErrorResponse(w, fmt.Errorf("could not find customer with id %s: %w", customerId, err), http.StatusNotFound)
 		return
 	}
+	// TODO: remove code below. I used it for testing
+	// ok, err := ch.customerIncoming.VerifyRefreshToken(r.Context(), customerId, "v4.local.slQLV4q17Pvyu2dRpEJmoFqOx3Xr-unmtpMymucerexbN1aQ7FqCtN6it7KohHzhGkaL9Vp9n9hoGPRjtkYaMA1Y7VO-xByjsMXwdMsqQgB3n9cVmfHnGqqryRlgrsyfowyjC_4RSNHoR5bX6KmDjxJaX-3LpITNQERD6nxFyFa30oV3UMSKCLqKmmLIWGzPTG4e0SxpPwN7nLLFihnL8iO-Xul-xUfR3vIdqo6vQ_6ozfETwdryUC2rtAwjFcaZASt-kXHGyoiW5KDzWnVPSsPjhi9T")
+	// if !ok {
+	// 	helpers.ErrorResponse(w, err, http.StatusNotFound)
+	// 	return
+	// }
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer found", http.StatusOK)
 }
 func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Request) {

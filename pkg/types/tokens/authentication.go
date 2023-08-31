@@ -10,8 +10,15 @@ import (
 )
 
 type ITokens interface {
-	SaveRefreshToken(ctx context.Context, refreshToken string) error
-	RetrieveAndVerifyRefreshToken(ctx context.Context, refreshToken string) (string, error)
+	SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error
+	DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error
+}
+type ITokensOutgoing interface {
+	RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error)
+}
+
+type ITokensIncoming interface {
+	VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error)
 }
 
 type AuthorizationLevel string
