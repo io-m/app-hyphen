@@ -64,7 +64,7 @@ func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Req
 		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusInternalServerError)
 		return
 	}
-	if err := ch.customerIncoming.ValidateCustomerPassword(customerRequest); err != nil {
+	if err := ch.customerIncoming.ValidateCustomerPassword(customerRequest.Password); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
 		return
 	}
@@ -101,7 +101,32 @@ func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Re
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer found", http.StatusOK)
 }
 func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
-
+	customerId := helpers.GetUrlParam(r, "id")
+	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequestOptional](w, r)
+	if err != nil {
+		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusBadRequest)
+		return
+	}
+	if customerRequest.OldPassword != nil {
+		if err := ch.customerIncoming.ValidateCustomerPassword(*customerRequest.OldPassword); err != nil {
+			helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
+			return
+		}
+	}
+	if customerRequest.OldPassword != nil {
+		hashedPassword, err := helpers.HashPassword(*customerRequest.NewPassword)
+		if err != nil {
+			helpers.ErrorResponse(w, fmt.Errorf("could not hash password: %w", err), http.StatusBadRequest)
+			return
+		}
+		customerRequest.NewPassword = &hashedPassword
+	}
+	customer, err := ch.customerIncoming.UpdateCustomer(r.Context(), customerId, customerRequest)
+	if err != nil {
+		helpers.ErrorResponse(w, fmt.Errorf("could not register this email: %w", err), http.StatusInternalServerError)
+		return
+	}
+	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully updated", http.StatusNoContent)
 }
 func (ch *CustomerRESTHandler) DeleteCustomerById(w http.ResponseWriter, r *http.Request) {
 

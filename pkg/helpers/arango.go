@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"reflect"
 
 	"github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
@@ -54,8 +53,9 @@ func ReadSingleDocument[T any](ctx context.Context, cursor driver.Cursor) (T, er
 		}
 		count++
 	}
-	if count < 1 {
-		return target, fmt.Errorf("document not found. expected type %v", reflect.TypeOf(target))
-	}
+	// if count < 1 {
+	// 	log.Println("ERROR in COUNT --> ")
+	// 	return target, fmt.Errorf("document not found. expected type %v", reflect.TypeOf(target))
+	// }
 	return target, nil
 }

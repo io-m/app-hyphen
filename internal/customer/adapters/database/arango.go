@@ -3,6 +3,7 @@ package customer_db_adapter
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/io-m/app-hyphen/internal/customer/adapters/database/queries"
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
@@ -47,9 +48,44 @@ func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId stri
 	return &customer, nil
 }
 
+// // TODO: implement ICustomerOutgoing interface for Arango
+// func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error) {
+// 	bindVars := map[string]interface{}{
+// 		"FirstName": customerRequest.FirstName,
+// 		"LastName":  customerRequest.LastName,
+// 		"Email":     customerRequest.Email,
+// 		"Password":  customerRequest.Password, // Make sure to hash before saving
+// 		"Address":   customerRequest.Address,
+// 		"Role":      customerRequest.Role,
+// 	}
+// cursor, err := db.arango.Query(ctx, queries.UPDATE_CUSTOMER_QUERY, bindVars)
+// if err != nil {
+// 	return nil, fmt.Errorf("query failed: %w", err)
+// }
+// defer cursor.Close()
+// customer, err := helpers.ReadSingleDocument[customer.Customer](ctx, cursor)
+// if err != nil {
+// 	return nil, err
+// }
+// return &customer, nil
+// }
+
 // TODO: implement ICustomerOutgoing interface for Arango
-func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error) {
-	return nil, nil
+func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error) {
+	updateQuery, bindVars := queries.BuildUpdateQueryAndVars(customerRequest, customerId)
+	log.Println("UPDATE QUERY ---> ", updateQuery)
+	cursor, err := db.arango.Query(ctx, updateQuery, bindVars)
+	log.Println("CURSOR --> ", cursor)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	defer cursor.Close()
+
+	customer, err := helpers.ReadSingleDocument[customer.Customer](ctx, cursor)
+	if err != nil {
+		return nil, err
+	}
+	return &customer, nil
 }
 
 // TODO: implement ICustomerOutgoing interface for Arango

@@ -18,6 +18,17 @@ type CustomerRequest struct {
 	Role      tokens.AuthorizationLevel `json:"role"`
 }
 
+type CustomerRequestOptional struct {
+	FirstName   *string                    `json:"first_name"`
+	LastName    *string                    `json:"last_name"`
+	Email       *string                    `json:"email"`
+	OldPassword *string                    `json:"old_password"`
+	NewPassword *string                    `json:"new_password"`
+	Address     *address.Address           `json:"address"`
+	Role        *tokens.AuthorizationLevel `json:"role"`
+	UpdatedAt   string                     `json:"updated_at,omitempty"`
+}
+
 type LoginCustomerRequest struct {
 	ID       string `json:"id"`
 	Email    string `json:"email"`

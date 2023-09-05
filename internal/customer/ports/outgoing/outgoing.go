@@ -18,6 +18,6 @@ type ICustomerCrud interface {
 	CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error)
 	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)
 	GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error)
-	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error)
 	DeleteCustomerById(ctx context.Context, customerId string) (string, error)
 }

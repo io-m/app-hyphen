@@ -16,10 +16,10 @@ type ICustomerIncoming interface {
 }
 
 type ICustomerUsecase interface {
-	ValidateCustomerPassword(customerRequest *customer_objects.CustomerRequest) error
+	ValidateCustomerPassword(customerPassword string) error
 	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
 	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)
 	GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error)
-	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error)
 	DeleteCustomerById(ctx context.Context, customerId string) (string, error)
 }

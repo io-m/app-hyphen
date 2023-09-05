@@ -18,7 +18,7 @@ func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Databa
 
 	/* CUSTOMER ROUTES */
 	config.Mux.Route("/customers", func(r chi.Router) {
-		r.Get("/", customerHandler.GetAllCustomers)
+		// r.Get("/", customerHandler.GetAllCustomers)
 		r.Get("/{id}", customerHandler.GetCustomerById)
 		r.Post("/register", customerHandler.CreateCustomer)
 		r.Post("/login", customerHandler.LoginCustomer)
@@ -26,8 +26,8 @@ func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Databa
 		/// Authentication required
 		r.Route("/", func(r chi.Router) {
 			r.Use(middlewares.MustAuthenticate(config.Authenticator))
-			r.Put("/{customer_id}", customerHandler.UpdateCustomer)
-			r.Delete("/{customer_id}", customerHandler.DeleteCustomerById)
+			r.Put("/{id}", customerHandler.UpdateCustomer)
+			r.Delete("/{id}", customerHandler.DeleteCustomerById)
 		})
 	})
 }
