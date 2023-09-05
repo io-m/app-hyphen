@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	app "github.com/io-m/app-hyphen/internal"
+	di "github.com/io-m/app-hyphen/internal"
 	hyphen_arango "github.com/io-m/app-hyphen/pkg/arango"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
@@ -33,7 +34,8 @@ func main() {
 	}()
 	port := os.Getenv(constants.APP_PORT)
 	log.Printf("listening on port: %s............\n", port)
-	if err := http.ListenAndServe(":"+port, app.SetAndRun(arangoDriver, redisClient)); err != nil {
+	mux := di.ConfigureRoutes(arangoDriver, redisClient)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), mux); err != nil {
 		log.Fatalf("Server is down!")
 	}
 }

@@ -1,4 +1,4 @@
-package app
+package di
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ import (
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
-func SetAndRun(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
+func ConfigureRoutes(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
 	authenticator := tokens.NewAuthenticator()
 	mux := chi.NewRouter()
 	mux.Use(cors.Handler(cors.Options{

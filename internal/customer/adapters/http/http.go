@@ -61,7 +61,7 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully logged in")
 }
 
-func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) Create(w http.ResponseWriter, r *http.Request) {
 	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequest](w, r)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusInternalServerError)
@@ -85,10 +85,10 @@ func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Req
 	}
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully registered", http.StatusCreated)
 }
-func (ch *CustomerRESTHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	//? Do we even need this one
 }
-func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	customerId := helpers.GetUrlParam(r, "id")
 	customer, err := ch.customerRepo.GetCustomerById(r.Context(), customerId)
 	if err != nil {
@@ -103,7 +103,7 @@ func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Re
 	// }
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer found", http.StatusOK)
 }
-func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) Update(w http.ResponseWriter, r *http.Request) {
 	customerId := helpers.GetUrlParam(r, "id")
 	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequestOptional](w, r)
 	if err != nil {
@@ -131,6 +131,6 @@ func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Req
 	}
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer successfully updated", http.StatusNoContent)
 }
-func (ch *CustomerRESTHandler) DeleteCustomerById(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerRESTHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
 
 }

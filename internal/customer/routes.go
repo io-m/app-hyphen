@@ -17,15 +17,15 @@ func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Databa
 	/* CUSTOMER ROUTES */
 	config.Mux.Route("/customers", func(r chi.Router) {
 		// r.Get("/", customerHandler.GetAllCustomers)
-		r.Get("/{id}", customerHandler.GetCustomerById)
-		r.Post("/register", customerHandler.CreateCustomer)
+		r.Get("/{id}", customerHandler.GetById)
+		r.Post("/register", customerHandler.Create)
 		r.Post("/login", customerHandler.LoginCustomer)
 
 		/// Authentication required
 		r.Route("/", func(r chi.Router) {
 			r.Use(middlewares.MustAuthenticate(config.Authenticator))
-			r.Put("/{id}", customerHandler.UpdateCustomer)
-			r.Delete("/{id}", customerHandler.DeleteCustomerById)
+			r.Put("/{id}", customerHandler.Update)
+			r.Delete("/{id}", customerHandler.DeleteById)
 		})
 	})
 }
