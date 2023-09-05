@@ -5,19 +5,22 @@ import (
 	"net/http"
 
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
-	customer_incoming "github.com/io-m/app-hyphen/internal/customer/ports/incoming"
+	customer_handler "github.com/io-m/app-hyphen/internal/customer/ports/handler"
+	customer_repository "github.com/io-m/app-hyphen/internal/customer/ports/repository"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 type CustomerRESTHandler struct {
-	customerIncoming customer_incoming.ICustomerIncoming
+	customerRepo  customer_repository.ICustomerRepository
+	authenticator tokens.IAuthenticator
 }
 
-func NewCustomerRESTHandler(customerIncoming customer_incoming.ICustomerIncoming) *CustomerRESTHandler {
+func NewCustomerRESTHandler(customerRepo customer_repository.ICustomerRepository, authenticator tokens.IAuthenticator) customer_handler.ICustomerHandler {
 	return &CustomerRESTHandler{
-		customerIncoming: customerIncoming,
+		customerRepo:  customerRepo,
+		authenticator: authenticator,
 	}
 }
 
@@ -31,7 +34,7 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 		helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
 		return
 	}
-	customer, err := ch.customerIncoming.GetCustomerById(r.Context(), c.ID)
+	customer, err := ch.customerRepo.GetCustomerById(r.Context(), c.ID)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not find customer: %w", err), http.StatusNotFound)
 		return
@@ -42,13 +45,13 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 	}
 	claims, _ := tokens.NewClaims(customer.ID, constants.ACCESS_TOKEN_DURATION)
 
-	accessToken, refreshToken, err := ch.customerIncoming.GenerateTokens(claims)
+	accessToken, refreshToken, err := ch.authenticator.GenerateTokens(claims)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while generating tokens: %w", err), http.StatusInternalServerError)
 		return
 	}
 	// Here we need to save refresh token in Redis
-	if err := ch.customerIncoming.SaveRefreshToken(r.Context(), customer.ID, refreshToken); err != nil {
+	if err := ch.customerRepo.SaveRefreshToken(r.Context(), customer.ID, refreshToken); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while saving refresh token: %w", err), http.StatusInternalServerError)
 		return
 	}
@@ -64,7 +67,7 @@ func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Req
 		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusInternalServerError)
 		return
 	}
-	if err := ch.customerIncoming.ValidateCustomerPassword(customerRequest.Password); err != nil {
+	if err := helpers.ValidatePassword(customerRequest.Password); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
 		return
 	}
@@ -75,7 +78,7 @@ func (ch *CustomerRESTHandler) CreateCustomer(w http.ResponseWriter, r *http.Req
 	}
 	// customer.Role = entities.CUSTOMER
 	customerRequest.Password = hashedPassword
-	customer, err := ch.customerIncoming.CreateCustomer(r.Context(), customerRequest)
+	customer, err := ch.customerRepo.CreateCustomer(r.Context(), customer_objects.MapCustomerRequestToCustomer(customerRequest))
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not register this email: %w", err), http.StatusInternalServerError)
 		return
@@ -87,7 +90,7 @@ func (ch *CustomerRESTHandler) GetAllCustomers(w http.ResponseWriter, r *http.Re
 }
 func (ch *CustomerRESTHandler) GetCustomerById(w http.ResponseWriter, r *http.Request) {
 	customerId := helpers.GetUrlParam(r, "id")
-	customer, err := ch.customerIncoming.GetCustomerById(r.Context(), customerId)
+	customer, err := ch.customerRepo.GetCustomerById(r.Context(), customerId)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not find customer with id %s: %w", customerId, err), http.StatusNotFound)
 		return
@@ -108,7 +111,7 @@ func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Req
 		return
 	}
 	if customerRequest.OldPassword != nil {
-		if err := ch.customerIncoming.ValidateCustomerPassword(*customerRequest.OldPassword); err != nil {
+		if err := helpers.ValidatePassword(*customerRequest.OldPassword); err != nil {
 			helpers.ErrorResponse(w, fmt.Errorf("error in password: %w", err), http.StatusBadRequest)
 			return
 		}
@@ -121,7 +124,7 @@ func (ch *CustomerRESTHandler) UpdateCustomer(w http.ResponseWriter, r *http.Req
 		}
 		customerRequest.NewPassword = &hashedPassword
 	}
-	customer, err := ch.customerIncoming.UpdateCustomer(r.Context(), customerId, customerRequest)
+	customer, err := ch.customerRepo.UpdateCustomer(r.Context(), customerId, customerRequest)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("could not register this email: %w", err), http.StatusInternalServerError)
 		return

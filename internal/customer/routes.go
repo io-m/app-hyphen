@@ -6,15 +6,13 @@ import (
 	"github.com/go-redis/redis/v8"
 	customer_db_adapter "github.com/io-m/app-hyphen/internal/customer/adapters/database"
 	customer_http_adapter "github.com/io-m/app-hyphen/internal/customer/adapters/http"
-	customer_logic "github.com/io-m/app-hyphen/internal/customer/logic"
 	"github.com/io-m/app-hyphen/pkg/middlewares"
 	"github.com/io-m/app-hyphen/pkg/types"
 )
 
 func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Database, redisClient *redis.Client) {
-	dbAdapter := customer_db_adapter.NewCustomerOutgoing(arangoDriver, redisClient)
-	customerLogic := customer_logic.NewCustomerLogic(dbAdapter, config.Authenticator)
-	customerHandler := customer_http_adapter.NewCustomerRESTHandler(customerLogic)
+	customerRepository := customer_db_adapter.NewCustomerRepository(arangoDriver, redisClient)
+	customerHandler := customer_http_adapter.NewCustomerRESTHandler(customerRepository, config.Authenticator)
 
 	/* CUSTOMER ROUTES */
 	config.Mux.Route("/customers", func(r chi.Router) {

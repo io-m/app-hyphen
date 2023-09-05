@@ -5,13 +5,13 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-type customerOutgoing struct {
+type customerRepository struct {
 	arango driver.Database
 	redis  *redis.Client
 }
 
-func NewCustomerOutgoing(arangoDriver driver.Database, redisClient *redis.Client) *customerOutgoing {
-	return &customerOutgoing{
+func NewCustomerRepository(arangoDriver driver.Database, redisClient *redis.Client) *customerRepository {
+	return &customerRepository{
 		arango: arangoDriver,
 		redis:  redisClient,
 	}

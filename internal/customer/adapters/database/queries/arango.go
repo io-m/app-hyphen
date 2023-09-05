@@ -68,7 +68,6 @@ func BuildUpdateQueryAndVars(req *customer_objects.CustomerRequestOptional, cust
 	baseQuery = strings.TrimSuffix(baseQuery, ",")
 	baseQuery += `
 	}
-
 	FOR customer IN customers
 	FILTER customer.id == @CustomerID
 	UPDATE customer WITH customerData IN customers

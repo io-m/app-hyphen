@@ -12,8 +12,6 @@ import (
 type ITokens interface {
 	SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error
 	DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error
-}
-type ITokensOutgoing interface {
 	RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error)
 }
 

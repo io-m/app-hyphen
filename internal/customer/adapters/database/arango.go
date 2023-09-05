@@ -3,7 +3,6 @@ package customer_db_adapter
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/io-m/app-hyphen/internal/customer/adapters/database/queries"
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
@@ -11,7 +10,7 @@ import (
 	"github.com/io-m/app-hyphen/pkg/helpers"
 )
 
-func (db *customerOutgoing) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
+func (db *customerRepository) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
 	// Perform AQL queries
 	bindVars := map[string]any{
 		"customer": customer,
@@ -26,12 +25,12 @@ func (db *customerOutgoing) CreateCustomer(ctx context.Context, customer *custom
 	return customer, nil
 }
 
-// TODO: implement ICustomerOutgoing interface for Arango
-func (db *customerOutgoing) GetAllCustomers(ctx context.Context) ([]*customer.Customer, error) {
+// TODO: implement ICustomerRepository interface for Arango
+func (db *customerRepository) GetAllCustomers(ctx context.Context) ([]*customer.Customer, error) {
 	return nil, nil
 }
 
-func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
+func (db *customerRepository) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
 	bindVars := map[string]interface{}{
 		"customerId": customerId, // Replace with the actual customer ID
 	}
@@ -48,34 +47,9 @@ func (db *customerOutgoing) GetCustomerById(ctx context.Context, customerId stri
 	return &customer, nil
 }
 
-// // TODO: implement ICustomerOutgoing interface for Arango
-// func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error) {
-// 	bindVars := map[string]interface{}{
-// 		"FirstName": customerRequest.FirstName,
-// 		"LastName":  customerRequest.LastName,
-// 		"Email":     customerRequest.Email,
-// 		"Password":  customerRequest.Password, // Make sure to hash before saving
-// 		"Address":   customerRequest.Address,
-// 		"Role":      customerRequest.Role,
-// 	}
-// cursor, err := db.arango.Query(ctx, queries.UPDATE_CUSTOMER_QUERY, bindVars)
-// if err != nil {
-// 	return nil, fmt.Errorf("query failed: %w", err)
-// }
-// defer cursor.Close()
-// customer, err := helpers.ReadSingleDocument[customer.Customer](ctx, cursor)
-// if err != nil {
-// 	return nil, err
-// }
-// return &customer, nil
-// }
-
-// TODO: implement ICustomerOutgoing interface for Arango
-func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error) {
+func (db *customerRepository) UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error) {
 	updateQuery, bindVars := queries.BuildUpdateQueryAndVars(customerRequest, customerId)
-	log.Println("UPDATE QUERY ---> ", updateQuery)
 	cursor, err := db.arango.Query(ctx, updateQuery, bindVars)
-	log.Println("CURSOR --> ", cursor)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
 	}
@@ -89,6 +63,6 @@ func (db *customerOutgoing) UpdateCustomer(ctx context.Context, customerId strin
 }
 
 // TODO: implement ICustomerOutgoing interface for Arango
-func (db *customerOutgoing) DeleteCustomerById(ctx context.Context, customerId string) (string, error) {
+func (db *customerRepository) DeleteCustomerById(ctx context.Context, customerId string) (string, error) {
 	return "", nil
 }

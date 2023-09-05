@@ -1,4 +1,4 @@
-package customer_incoming
+package customer_repository
 
 import (
 	"context"
@@ -8,16 +8,13 @@ import (
 	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
-type ICustomerIncoming interface {
-	ICustomerUsecase
-	tokens.IAuthenticator
+type ICustomerRepository interface {
+	ICustomerCrud
 	tokens.ITokens
-	tokens.ITokensIncoming
 }
 
-type ICustomerUsecase interface {
-	ValidateCustomerPassword(customerPassword string) error
-	CreateCustomer(ctx context.Context, customerRequest *customer_objects.CustomerRequest) (*customer.Customer, error)
+type ICustomerCrud interface {
+	CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error)
 	GetAllCustomers(ctx context.Context) ([]*customer.Customer, error)
 	GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error)
 	UpdateCustomer(ctx context.Context, customerId string, customerRequest *customer_objects.CustomerRequestOptional) (*customer.Customer, error)
