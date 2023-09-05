@@ -32,7 +32,7 @@ func (db *customerRepository) GetAllCustomers(ctx context.Context) ([]*customer.
 
 func (db *customerRepository) GetCustomerById(ctx context.Context, customerId string) (*customer.Customer, error) {
 	bindVars := map[string]interface{}{
-		"customerId": customerId, // Replace with the actual customer ID
+		"customerId": customerId,
 	}
 	cursor, err := db.arango.Query(ctx, queries.GET_CUSTOMER_BY_ID_QUERY, bindVars)
 	if err != nil {

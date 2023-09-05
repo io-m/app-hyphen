@@ -21,8 +21,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	key, _ := helpers.GenerateRandomKey(16)
-	log.Println("RANDOM::: ", key)
 	redisClient, err := hyphen_redis.CreateRedisConnection()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -33,7 +31,7 @@ func main() {
 			log.Fatal(err.Error())
 		}
 	}()
-	port := os.Getenv("APP_PORT")
+	port := os.Getenv(constants.APP_PORT)
 	log.Printf("listening on port: %s............\n", port)
 	if err := http.ListenAndServe(":"+port, app.SetAndRun(arangoDriver, redisClient)); err != nil {
 		log.Fatalf("Server is down!")

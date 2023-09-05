@@ -17,4 +17,5 @@ const (
 	REFRESH_TOKEN_DURATION   time.Duration = 100 * 24 * 60 * time.Minute // 100 days
 	ACCESS_TOKEN_SECRET_KEY                = "ACCESS_TOKEN_SECRET_KEY"
 	REFRESH_TOKEN_SECRET_KEY               = "REFRESH_TOKEN_SECRET_KEY"
+	APP_PORT                               = "APP_PORT"
 )
