@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	address "github.com/io-m/app-hyphen/internal/address/domain/entity"
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
+	"github.com/io-m/app-hyphen/internal/tokens"
 )
 
 type CustomerRequest struct {

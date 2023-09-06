@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/io-m/app-hyphen/internal/tokens"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 // MustAuthenticate is a middleware function that performs authentication.

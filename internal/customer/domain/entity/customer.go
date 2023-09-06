@@ -2,7 +2,7 @@ package customer
 
 import (
 	address "github.com/io-m/app-hyphen/internal/address/domain/entity"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
+	"github.com/io-m/app-hyphen/internal/tokens"
 )
 
 type Customer struct {

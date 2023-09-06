@@ -3,7 +3,6 @@ package hyphen_redis
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/go-redis/redis/v8"
@@ -11,8 +10,6 @@ import (
 )
 
 func CreateRedisConnection() (*redis.Client, error) {
-	log.Println("password: ", os.Getenv(constants.REDIS_PASSWORD))
-	log.Println("address: ", os.Getenv(constants.REDIS_ADDRESS))
 	// Create a new Redis client
 	client := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv(constants.REDIS_ADDRESS),  // Redis server address

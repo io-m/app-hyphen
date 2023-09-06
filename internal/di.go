@@ -9,10 +9,15 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-redis/redis/v8"
 	customer_common "github.com/io-m/app-hyphen/internal/customer"
+	"github.com/io-m/app-hyphen/internal/tokens"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/types"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
+
+type AppConfig struct {
+	Mux           chi.Router
+	Authenticator tokens.IAuthenticator
+}
 
 func ConfigureRoutes(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
 	authenticator := tokens.NewAuthenticator()

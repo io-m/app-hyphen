@@ -1,23 +1,12 @@
 package tokens
 
 import (
-	"context"
 	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
-
-type ITokens interface {
-	SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error
-	DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error
-	RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error)
-}
-
-type ITokensIncoming interface {
-	VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error)
-}
 
 type AuthorizationLevel string
 

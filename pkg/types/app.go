@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
+	"github.com/io-m/app-hyphen/internal/tokens"
 )
 
 type AppConfig struct {

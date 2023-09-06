@@ -7,9 +7,9 @@ import (
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
 	customer_handler "github.com/io-m/app-hyphen/internal/customer/ports/handler"
 	customer_repository "github.com/io-m/app-hyphen/internal/customer/ports/repository"
+	"github.com/io-m/app-hyphen/internal/tokens"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
-	"github.com/io-m/app-hyphen/pkg/types/tokens"
 )
 
 type CustomerRESTHandler struct {
