@@ -1,7 +1,9 @@
 package customer_http_adapter
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
@@ -14,10 +16,10 @@ import (
 
 type CustomerRESTHandler struct {
 	customerRepo  customer_repository.ICustomerRepository
-	authenticator tokens.IAuthenticator
+	authenticator tokens.ITokens
 }
 
-func NewCustomerRESTHandler(customerRepo customer_repository.ICustomerRepository, authenticator tokens.IAuthenticator) customer_handler.ICustomerHandler {
+func NewCustomerRESTHandler(customerRepo customer_repository.ICustomerRepository, authenticator tokens.ITokens) customer_handler.ICustomerHandler {
 	return &CustomerRESTHandler{
 		customerRepo:  customerRepo,
 		authenticator: authenticator,
@@ -51,7 +53,7 @@ func (ch *CustomerRESTHandler) LoginCustomer(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	// Here we need to save refresh token in Redis
-	if err := ch.customerRepo.SaveRefreshToken(r.Context(), customer.ID, refreshToken); err != nil {
+	if err := ch.authenticator.SaveRefreshToken(r.Context(), customer.ID, refreshToken); err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while saving refresh token: %w", err), http.StatusInternalServerError)
 		return
 	}
@@ -95,16 +97,22 @@ func (ch *CustomerRESTHandler) GetById(w http.ResponseWriter, r *http.Request) {
 		helpers.ErrorResponse(w, fmt.Errorf("could not find customer with id %s: %w", customerId, err), http.StatusNotFound)
 		return
 	}
-	// TODO: remove code below. I used it for testing
-	// ok, err := ch.customerIncoming.VerifyRefreshToken(r.Context(), customerId, "v4.local.slQLV4q17Pvyu2dRpEJmoFqOx3Xr-unmtpMymucerexbN1aQ7FqCtN6it7KohHzhGkaL9Vp9n9hoGPRjtkYaMA1Y7VO-xByjsMXwdMsqQgB3n9cVmfHnGqqryRlgrsyfowyjC_4RSNHoR5bX6KmDjxJaX-3LpITNQERD6nxFyFa30oV3UMSKCLqKmmLIWGzPTG4e0SxpPwN7nLLFihnL8iO-Xul-xUfR3vIdqo6vQ_6ozfETwdryUC2rtAwjFcaZASt-kXHGyoiW5KDzWnVPSsPjhi9T")
-	// if !ok {
-	// 	helpers.ErrorResponse(w, err, http.StatusNotFound)
-	// 	return
-	// }
 	helpers.SuccessResponse(w, customer_objects.MapCustomerToCustomerResponse(customer), "Customer found", http.StatusOK)
 }
 func (ch *CustomerRESTHandler) Update(w http.ResponseWriter, r *http.Request) {
 	customerId := helpers.GetUrlParam(r, "id")
+	claims, ok := r.Context().Value(constants.CLAIMS).(*tokens.Claims)
+	if !ok {
+		helpers.ErrorResponse(w, errors.New("token verification issue:cannot extract claims from context"), http.StatusUnauthorized)
+		return
+	}
+	log.Println("CUSTOMER ID ===> ", customerId)
+	log.Println("CLAIM SUBJECT ID ===> ", claims.SubjectID)
+	log.Println("CLAIM  ID ===> ", claims.ClaimID)
+	if claims.SubjectID != customerId {
+		helpers.ErrorResponse(w, errors.New("token verification issue: Not your profile"), http.StatusUnauthorized)
+		return
+	}
 	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequestOptional](w, r)
 	if err != nil {
 		helpers.ErrorResponse(w, fmt.Errorf("error while decoding payload: %w", err), http.StatusBadRequest)

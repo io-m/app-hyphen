@@ -16,11 +16,11 @@ import (
 
 type AppConfig struct {
 	Mux           chi.Router
-	Authenticator tokens.IAuthenticator
+	Authenticator tokens.ITokens
 }
 
 func ConfigureRoutes(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
-	authenticator := tokens.NewAuthenticator()
+	authenticator := tokens.NewAuthenticationTokens()
 	mux := chi.NewRouter()
 	mux.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://*", "https://*"},

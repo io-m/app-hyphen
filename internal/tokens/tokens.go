@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -40,13 +41,17 @@ func NewClaims(subjectID string /*role entities.AuthorizationLevel,*/, duration 
 	return claims, nil
 }
 
-type IAuthenticator interface {
+type ITokens interface {
 	GenerateTokens(claims *Claims) (string, string, error)
 	VerifyToken(token string) (*Claims, error)
+	SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error
+	DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error
+	RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error)
+	VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error)
 }
 
 // Based on running environment we select authenticator
-func NewAuthenticator() IAuthenticator {
+func NewAuthenticationTokens() ITokens {
 	if os.Getenv(constants.RUNNING_ENV) == constants.DEVELOPMENT {
 		return NewPasetoProtector()
 	}

@@ -5,12 +5,10 @@ import (
 
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
-	"github.com/io-m/app-hyphen/pkg/types"
 )
 
 type ICustomerRepository interface {
 	ICustomerCrud
-	types.ITokens
 }
 
 type ICustomerCrud interface {

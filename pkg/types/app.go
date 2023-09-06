@@ -7,5 +7,5 @@ import (
 
 type AppConfig struct {
 	Mux           chi.Router
-	Authenticator tokens.IAuthenticator
+	Authenticator tokens.ITokens
 }
