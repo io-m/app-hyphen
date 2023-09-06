@@ -14,11 +14,6 @@ import (
 	"github.com/io-m/app-hyphen/pkg/types"
 )
 
-type AppConfig struct {
-	Mux           chi.Router
-	Authenticator tokens.ITokens
-}
-
 func ConfigureRoutes(arangoDriver driver.Database, redisClient *redis.Client) *chi.Mux {
 	authenticator := tokens.NewAuthenticationTokens()
 	mux := chi.NewRouter()
@@ -33,7 +28,7 @@ func ConfigureRoutes(arangoDriver driver.Database, redisClient *redis.Client) *c
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
 	mux.Route(constants.BASE_ROUTE, func(r chi.Router) {
-		config := &types.AppConfig{
+		config := &types.RouteConfig{
 			Mux:           r,
 			Authenticator: authenticator,
 		}

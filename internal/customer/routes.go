@@ -10,7 +10,7 @@ import (
 	"github.com/io-m/app-hyphen/pkg/types"
 )
 
-func SetAndRunCustomerRoutes(config *types.AppConfig, arangoDriver driver.Database, redisClient *redis.Client) {
+func SetAndRunCustomerRoutes(config *types.RouteConfig, arangoDriver driver.Database, redisClient *redis.Client) {
 	customerRepository := customer_db_adapter.NewCustomerRepository(arangoDriver, redisClient)
 	customerHandler := customer_http_adapter.NewCustomerRESTHandler(customerRepository, config.Authenticator)
 

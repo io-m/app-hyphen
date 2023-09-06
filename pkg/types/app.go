@@ -5,7 +5,7 @@ import (
 	"github.com/io-m/app-hyphen/internal/tokens"
 )
 
-type AppConfig struct {
+type RouteConfig struct {
 	Mux           chi.Router
 	Authenticator tokens.ITokens
 }
