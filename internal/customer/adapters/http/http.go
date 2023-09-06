@@ -3,7 +3,6 @@ package customer_http_adapter
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
@@ -101,16 +100,8 @@ func (ch *CustomerRESTHandler) GetById(w http.ResponseWriter, r *http.Request) {
 }
 func (ch *CustomerRESTHandler) Update(w http.ResponseWriter, r *http.Request) {
 	customerId := helpers.GetUrlParam(r, "id")
-	claims, ok := r.Context().Value(constants.CLAIMS).(*tokens.Claims)
-	if !ok {
-		helpers.ErrorResponse(w, errors.New("token verification issue:cannot extract claims from context"), http.StatusUnauthorized)
-		return
-	}
-	log.Println("CUSTOMER ID ===> ", customerId)
-	log.Println("CLAIM SUBJECT ID ===> ", claims.SubjectID)
-	log.Println("CLAIM  ID ===> ", claims.ClaimID)
-	if claims.SubjectID != customerId {
-		helpers.ErrorResponse(w, errors.New("token verification issue: Not your profile"), http.StatusUnauthorized)
+	if !helpers.IsUserAuthorized(r.Context(), customerId) {
+		helpers.ErrorResponse(w, errors.New("token verification issue: not authorized"), http.StatusUnauthorized)
 		return
 	}
 	customerRequest, err := helpers.DecodePayload[*customer_objects.CustomerRequestOptional](w, r)
