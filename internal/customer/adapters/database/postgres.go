@@ -2,6 +2,7 @@ package customer_db_adapter
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"strings"
 	"time"
@@ -10,6 +11,9 @@ import (
 	customer "github.com/io-m/app-hyphen/internal/customer/domain/entity"
 	customer_objects "github.com/io-m/app-hyphen/internal/customer/domain/objects"
 )
+
+//go:embed queries/find_customer_by_id.sql
+var findCustomerById string
 
 func (db *customerRepository) CreateCustomer(ctx context.Context, customer *customer.Customer) (*customer.Customer, error) {
 
@@ -27,19 +31,7 @@ func (db *customerRepository) FindCustomerByEmail(ctx context.Context, email str
 
 func (db *customerRepository) FindCustomerById(ctx context.Context, customerId uuid.UUID) (*customer.Customer, error) {
 	var customer customer.Customer
-	const query = `
-	SELECT 
-		c.id, c.first_name, c.last_name, c.email, c.password, 
-		a.id "address.id", a.street_name "address.street_name", a.house_number "address.house_number", 
-		a.city "address.city", a.zip_code "address.zip_code", a.country "address.country", 
-		a.state "address.state", a.region "address.region", a.extra_info "address.extra_info",
-		a.created_at "address.created_at", a.updated_at "address.updated_at", 
-		c.created_at, c.updated_at
-	FROM customers c
-	INNER JOIN addresses a ON c.address_id = a.id
-	WHERE c.id = $1
-	`
-	err := db.postgres.Get(&customer, query, customerId)
+	err := db.postgres.Get(&customer, findCustomerById, customerId)
 	if err != nil {
 		return nil, err
 	}
