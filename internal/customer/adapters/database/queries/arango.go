@@ -11,19 +11,24 @@ import (
 const CREATE_CUSTOMER_QUERY = "INSERT @customer INTO customers"
 const GET_CUSTOMER_BY_ID_QUERY = `
 	FOR customer IN customers
-	FILTER customer.id == @customerId
+	FILTER customer._key == @customerKey
+	RETURN customer
+`
+const GET_CUSTOMER_BY_EMAIL_QUERY = `
+	FOR customer IN customers
+	FILTER customer.email == @email
 	RETURN customer
 `
 
-func BuildUpdateQueryAndVars(req *customer_objects.CustomerRequestOptional, customerId string) (string, map[string]interface{}) {
-	log.Println("ID ==> ", customerId)
+func BuildUpdateQueryAndVars(req *customer_objects.CustomerRequestOptional, customerKey string) (string, map[string]interface{}) {
+	log.Println("_key ==> ", customerKey)
 	baseQuery := `
 	LET customerData = {`
 
 	bindVars := make(map[string]interface{})
 
 	// Always add the CustomerID as that is required for filtering
-	bindVars["CustomerID"] = customerId
+	bindVars["customerKey"] = customerKey
 	bindVars["UpdatedAt"] = time.Now().Format(time.RFC3339)
 	baseQuery += `
 		"updated_at": @UpdatedAt,`
@@ -69,7 +74,7 @@ func BuildUpdateQueryAndVars(req *customer_objects.CustomerRequestOptional, cust
 	baseQuery += `
 	}
 	FOR customer IN customers
-	FILTER customer.id == @CustomerID
+	FILTER customer._key == @customerKey
 	UPDATE customer WITH customerData IN customers
 	RETURN NEW
 	`

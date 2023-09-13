@@ -8,8 +8,6 @@ import (
 	"regexp"
 )
 
-//
-
 var (
 	hasLower    = regexp.MustCompile(`[a-z]`).MatchString
 	hasUpper    = regexp.MustCompile(`[A-Z]`).MatchString

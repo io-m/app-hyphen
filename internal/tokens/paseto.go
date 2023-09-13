@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"aidanwoods.dev/go-paseto"
+	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
 
@@ -47,7 +48,7 @@ func (protector *pasetoProtector) VerifyToken(stringifiedToken string) (*Claims,
 func (protector *pasetoProtector) GenerateTokens(claims *Claims) (string, string, error) {
 	protector.token.SetExpiration(claims.ExpiredAt)
 	protector.token.SetIssuedAt(claims.IssuedAt)
-	protector.token.SetSubject(claims.SubjectID)
+	protector.token.SetSubject(claims.SubjectID.String())
 	protector.token.SetJti(claims.ClaimID.String())
 	// protector.token.Set("roles", claims.Roles)
 	symmetricAccessTokenKey, err := paseto.V4SymmetricKeyFromBytes(protector.accessTokenSecretKey)
@@ -63,15 +64,15 @@ func (protector *pasetoProtector) GenerateTokens(claims *Claims) (string, string
 	return encryptedAccessTokenKey, encryptedRefreshTokenKey, nil
 }
 
-func (protector *pasetoProtector) SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+func (protector *pasetoProtector) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
 	return nil
 }
-func (protector *pasetoProtector) DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+func (protector *pasetoProtector) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
 	return nil
 }
-func (protector *pasetoProtector) RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error) {
+func (protector *pasetoProtector) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
 	return "", nil
 }
-func (protector *pasetoProtector) VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error) {
+func (protector *pasetoProtector) VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error) {
 	return false, nil
 }

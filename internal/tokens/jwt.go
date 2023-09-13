@@ -3,6 +3,7 @@ package tokens
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
 
@@ -30,15 +31,15 @@ func (protector *jwtAuthenticator) VerifyToken(stringifiedToken string) (*Claims
 	return nil, nil
 }
 
-func (protector *jwtAuthenticator) SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+func (protector *jwtAuthenticator) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
 	return nil
 }
-func (protector *jwtAuthenticator) DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error {
+func (protector *jwtAuthenticator) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
 	return nil
 }
-func (protector *jwtAuthenticator) RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error) {
+func (protector *jwtAuthenticator) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
 	return "", nil
 }
-func (protector *jwtAuthenticator) VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error) {
+func (protector *jwtAuthenticator) VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error) {
 	return false, nil
 }

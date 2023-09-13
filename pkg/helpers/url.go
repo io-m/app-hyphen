@@ -4,8 +4,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
-func GetUrlParam(r *http.Request, param string) string {
-	return chi.URLParam(r, param)
+func GetUrlParam(r *http.Request, param string) uuid.UUID {
+	return uuid.MustParse(chi.URLParam(r, param))
 }

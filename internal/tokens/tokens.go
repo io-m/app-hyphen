@@ -20,13 +20,13 @@ const (
 
 type Claims struct {
 	ClaimID   uuid.UUID `json:"jti"`
-	SubjectID string    `json:"sub"`
+	SubjectID uuid.UUID `json:"sub"`
 	IssuedAt  time.Time `json:"iat"`
 	ExpiredAt time.Time `json:"exp"`
 	// Roles     []entities.AuthorizationLevel `json:"roles,omitempty"`
 }
 
-func NewClaims(subjectID string /*role entities.AuthorizationLevel,*/, duration time.Duration) (*Claims, error) {
+func NewClaims(subjectID uuid.UUID /*role entities.AuthorizationLevel,*/, duration time.Duration) (*Claims, error) {
 	claimID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -44,10 +44,10 @@ func NewClaims(subjectID string /*role entities.AuthorizationLevel,*/, duration 
 type ITokens interface {
 	GenerateTokens(claims *Claims) (string, string, error)
 	VerifyToken(token string) (*Claims, error)
-	SaveRefreshToken(ctx context.Context, customerId, refreshToken string) error
-	DeleteRefreshToken(ctx context.Context, customerId, refreshToken string) error
-	RetrieveRefreshToken(ctx context.Context, customerId, refreshToken string) (string, error)
-	VerifyRefreshToken(ctx context.Context, customerId, refreshToken string) (bool, error)
+	SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error
+	DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error
+	RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error)
+	VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error)
 }
 
 // Based on running environment we select authenticator

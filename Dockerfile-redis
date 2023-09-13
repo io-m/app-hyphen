@@ -1,7 +1,0 @@
-FROM redis:latest
-
-# Expose the necessary port
-EXPOSE 6379
-
-# Start Redis service
-CMD ["redis-server", "--bind", "0.0.0.0"]

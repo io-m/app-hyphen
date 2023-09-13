@@ -21,7 +21,9 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/uuid v1.3.1
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/lib/pq v1.10.9
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	golang.org/x/sys v0.11.0 // indirect
 )

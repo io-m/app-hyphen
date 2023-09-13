@@ -1,18 +1,17 @@
 package customer
 
 import (
+	"github.com/google/uuid"
 	address "github.com/io-m/app-hyphen/internal/address/domain/entity"
-	"github.com/io-m/app-hyphen/internal/tokens"
 )
 
 type Customer struct {
-	ID        string                    `json:"id"`
-	FirstName string                    `json:"first_name"`
-	LastName  string                    `json:"last_name"`
-	Email     string                    `json:"email"`
-	Password  string                    `json:"password"`
-	Address   address.Address           `json:"address"`
-	Role      tokens.AuthorizationLevel `json:"role"`
-	CreatedAt string                    `json:"created_at"`
-	UpdatedAt *string                   `json:"updated_at,omitempty"`
+	Id        uuid.UUID `json:"id" db:"id"`
+	FirstName string    `json:"first_name" db:"first_name"`
+	LastName  string    `json:"last_name" db:"last_name"`
+	Email     string    `json:"email" db:"email"`
+	Password  string    `json:"password" db:"password"`
+	Address   *address.Address
+	CreatedAt *string `json:"created_at,omitempty" db:"created_at"`
+	UpdatedAt *string `json:"updated_at,omitempty" db:"updated_at"`
 }

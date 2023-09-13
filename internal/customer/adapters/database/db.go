@@ -1,18 +1,18 @@
 package customer_db_adapter
 
 import (
-	"github.com/arangodb/go-driver"
 	"github.com/go-redis/redis/v8"
+	"github.com/jmoiron/sqlx"
 )
 
 type customerRepository struct {
-	arango driver.Database
-	redis  *redis.Client
+	postgres *sqlx.DB
+	redis    *redis.Client
 }
 
-func NewCustomerRepository(arangoDriver driver.Database, redisClient *redis.Client) *customerRepository {
+func NewCustomerRepository(postgres *sqlx.DB, redisClient *redis.Client) *customerRepository {
 	return &customerRepository{
-		arango: arangoDriver,
-		redis:  redisClient,
+		postgres: postgres,
+		redis:    redisClient,
 	}
 }

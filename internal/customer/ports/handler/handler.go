@@ -7,6 +7,6 @@ import (
 )
 
 type ICustomerHandler interface {
-	LoginCustomer(w http.ResponseWriter, r *http.Request)
+	Login(w http.ResponseWriter, r *http.Request)
 	types.ICrudHandler
 }

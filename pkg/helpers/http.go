@@ -3,12 +3,13 @@ package helpers
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/internal/tokens"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
 
 // IsUserAuthorized compares id extracted from url params and subject id stored in claims
-func IsUserAuthorized(ctx context.Context, id string) bool {
+func IsUserAuthorized(ctx context.Context, id uuid.UUID) bool {
 	claims, ok := ctx.Value(constants.CLAIMS).(*tokens.Claims)
 	if !ok {
 		return false

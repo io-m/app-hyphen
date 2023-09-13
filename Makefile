@@ -4,7 +4,7 @@ run:
 	go run ./cmd/main.go
 
 db-up:
-	docker-compose -f docker-compose.yml up
+	docker-compose -f ./infrastructure/docker-compose-template.yml up
 
 db-down:
-	docker-compose -f docker-compose.yml down
+	docker-compose -f ./infrastructure/docker-compose-template.yml down
