@@ -1,3 +1,2 @@
 .env
-/infrastructure/docker-compose-template.yml
-.vscode
+/infrastructure/*
