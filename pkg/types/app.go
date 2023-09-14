@@ -8,9 +8,10 @@ import (
 )
 
 type AppConfig struct {
-	Mux           *chi.Mux
-	Router        chi.Router
-	Authenticator tokens.ITokens
-	Postgres      *sqlx.DB
-	RedisClient   *redis.Client
+	Mux         *chi.Mux
+	Router      chi.Router
+	Protector   tokens.IProtector
+	Tokens      tokens.ITokens
+	Postgres    *sqlx.DB
+	RedisClient *redis.Client
 }

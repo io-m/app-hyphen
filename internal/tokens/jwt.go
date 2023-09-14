@@ -12,7 +12,7 @@ type jwtAuthenticator struct {
 	refreshTokenSecretKey []byte
 }
 
-func NewJWTProtector() ITokens {
+func NewJWTProtector() IProtector {
 	return &jwtAuthenticator{
 		accessTokenSecretKey:  []byte(constants.ACCESS_TOKEN_SECRET_KEY),
 		refreshTokenSecretKey: []byte(constants.REFRESH_TOKEN_SECRET_KEY),
@@ -31,15 +31,6 @@ func (protector *jwtAuthenticator) VerifyToken(stringifiedToken string) (*Claims
 	return nil, nil
 }
 
-func (protector *jwtAuthenticator) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
-	return nil
-}
-func (protector *jwtAuthenticator) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
-	return nil
-}
-func (protector *jwtAuthenticator) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
-	return "", nil
-}
 func (protector *jwtAuthenticator) VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error) {
 	return false, nil
 }

@@ -64,15 +64,17 @@ func (protector *pasetoProtector) GenerateTokens(claims *Claims) (string, string
 	return encryptedAccessTokenKey, encryptedRefreshTokenKey, nil
 }
 
-func (protector *pasetoProtector) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
-	return nil
-}
-func (protector *pasetoProtector) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
-	return nil
-}
-func (protector *pasetoProtector) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
-	return "", nil
-}
+//	func (protector *pasetoProtector) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
+//		return nil
+//	}
+//
+//	func (protector *pasetoProtector) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
+//		return nil
+//	}
+//
+//	func (protector *pasetoProtector) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
+//		return "", nil
+//	}
 func (protector *pasetoProtector) VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error) {
 	return false, nil
 }

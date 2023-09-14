@@ -46,13 +46,14 @@ func main() {
 		}
 	}()
 
-	authenticator := tokens.NewAuthenticationTokens()
+	protector := tokens.NewProtector()
 	mux := chi.NewRouter()
 	config := &types.AppConfig{
-		Mux:           mux,
-		Authenticator: authenticator,
-		Postgres:      postgresConnection,
-		RedisClient:   redisClient,
+		Mux:         mux,
+		Protector:   protector,
+		Tokens:      tokens.NewTokens(redisClient),
+		Postgres:    postgresConnection,
+		RedisClient: redisClient,
 	}
 
 	port := os.Getenv(constants.APP_PORT)

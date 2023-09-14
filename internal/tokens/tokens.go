@@ -2,9 +2,9 @@ package tokens
 
 import (
 	"context"
-	"os"
-	"time"
+	"fmt"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/io-m/app-hyphen/pkg/constants"
 )
@@ -18,42 +18,41 @@ const (
 	SUDO     AuthorizationLevel = "SUDO"
 )
 
-type Claims struct {
-	ClaimID   uuid.UUID `json:"jti"`
-	SubjectID uuid.UUID `json:"sub"`
-	IssuedAt  time.Time `json:"iat"`
-	ExpiredAt time.Time `json:"exp"`
-	// Roles     []entities.AuthorizationLevel `json:"roles,omitempty"`
-}
-
-func NewClaims(subjectID uuid.UUID /*role entities.AuthorizationLevel,*/, duration time.Duration) (*Claims, error) {
-	claimID, err := uuid.NewRandom()
-	if err != nil {
-		return nil, err
-	}
-	claims := &Claims{
-		ClaimID:   claimID,
-		SubjectID: subjectID,
-		IssuedAt:  time.Now().UTC(),
-		ExpiredAt: time.Now().Add(constants.ACCESS_TOKEN_DURATION).UTC(),
-		// Roles:     []entities.AuthorizationLevel{role},
-	}
-	return claims, nil
-}
-
 type ITokens interface {
-	GenerateTokens(claims *Claims) (string, string, error)
-	VerifyToken(token string) (*Claims, error)
 	SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error
 	DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error
 	RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error)
-	VerifyRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (bool, error)
 }
 
-// Based on running environment we select authenticator
-func NewAuthenticationTokens() ITokens {
-	if os.Getenv(constants.RUNNING_ENV) == constants.DEVELOPMENT {
-		return NewPasetoProtector()
+type tokens struct {
+	redis *redis.Client
+}
+
+func NewTokens(redis *redis.Client) *tokens {
+	return &tokens{
+		redis: redis,
 	}
-	return NewJWTProtector()
+}
+
+func (t *tokens) SaveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
+	err := t.redis.HSet(ctx, customerId.String(), "refreshToken", refreshToken)
+
+	if err != nil {
+		return err.Err()
+	}
+	return nil
+}
+
+func (t *tokens) RetrieveRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) (string, error) {
+	rt, err := t.redis.Get(ctx, constants.REFRESH_TOKEN_KEY).Result()
+	if err != redis.Nil {
+		return "", fmt.Errorf("%s key does not exist: %w", constants.REFRESH_TOKEN_KEY, err)
+	} else if err != nil {
+		return "", err
+	}
+	return rt, nil
+}
+
+func (t *tokens) DeleteRefreshToken(ctx context.Context, customerId uuid.UUID, refreshToken string) error {
+	return nil
 }

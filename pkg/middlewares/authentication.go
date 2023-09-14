@@ -13,7 +13,7 @@ import (
 )
 
 // MustAuthenticate is a middleware function that performs authentication.
-func MustAuthenticate(authenticator tokens.ITokens) func(http.Handler) http.Handler {
+func MustAuthenticate(protector tokens.IProtector) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Perform authentication logic here
@@ -24,7 +24,7 @@ func MustAuthenticate(authenticator tokens.ITokens) func(http.Handler) http.Hand
 				return
 			}
 			token := fields[1]
-			claims, err := authenticator.VerifyToken(token)
+			claims, err := protector.VerifyToken(token)
 			if err != nil {
 				helpers.ErrorResponse(w, fmt.Errorf("token verification issue: %w", err), http.StatusUnauthorized)
 				return
