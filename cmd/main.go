@@ -10,15 +10,11 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	di "github.com/io-m/app-hyphen/internal"
-	address_repository "github.com/io-m/app-hyphen/internal/address/repository"
-	customer_repository "github.com/io-m/app-hyphen/internal/customer/repository"
-	"github.com/io-m/app-hyphen/internal/tokens"
+	"github.com/io-m/app-hyphen/internal/shared"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
 	"github.com/io-m/app-hyphen/pkg/postgres"
 	hyphen_redis "github.com/io-m/app-hyphen/pkg/redis"
-	"github.com/io-m/app-hyphen/pkg/repositories"
-	"github.com/io-m/app-hyphen/pkg/types"
 	"golang.org/x/exp/slog"
 )
 
@@ -49,27 +45,16 @@ func main() {
 		}
 	}()
 
-	protector := tokens.NewProtector()
-	mux := chi.NewRouter()
-	repositories := &repositories.AppRepositories{
-		AddressRepository:  address_repository.NewAddressRepository(postgresConnection, redisClient),
-		CustomerRepository: customer_repository.NewCustomerRepository(postgresConnection, redisClient),
-	}
-	// Global singleton
-	config := &types.AppConfig{
-		Mux:          mux,
-		Protector:    protector,
-		Tokens:       tokens.NewTokens(redisClient),
-		Postgres:     postgresConnection,
-		RedisClient:  redisClient,
-		Repositories: repositories,
-	}
+	// Global singleton - not able to change except router
+	appConfig := shared.NewAppConfig(postgresConnection, redisClient)
 
 	port := os.Getenv(constants.APP_PORT)
 	log.Printf("listening on port: %s............\n", port)
-	di.ConfigureRoutes(config)
+	di.ConfigureRoutes(appConfig)
+
+	// Run server in separate goroutine
 	go func() {
-		runServer(port, mux)
+		runServer(port, appConfig.GetMux())
 	}()
 
 	// Handling graceful shutdown
