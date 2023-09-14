@@ -1,2 +1,3 @@
 .env
-/infrastructure/*
+/infrastructure/docker-compose-template.yml
+/infrastructure/dev.env

@@ -5,7 +5,7 @@ import (
 	customer_http_adapter "github.com/io-m/app-hyphen/internal/features/customer/handler"
 	customer_usecase_adapter "github.com/io-m/app-hyphen/internal/features/customer/usecase"
 	"github.com/io-m/app-hyphen/internal/shared"
-	"github.com/io-m/app-hyphen/pkg/middlewares"
+	"github.com/io-m/app-hyphen/internal/shared/middlewares"
 )
 
 func SetAndRunCustomerRoutes(config *shared.AppConfig) {
