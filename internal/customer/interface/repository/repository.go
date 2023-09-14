@@ -1,4 +1,4 @@
-package customer_repository
+package customer_repository_interface
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package address_db_repository
+package address_repository
 
 import (
 	"github.com/go-redis/redis/v8"

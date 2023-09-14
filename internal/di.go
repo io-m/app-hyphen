@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	auth_routes "github.com/io-m/app-hyphen/internal/auth"
 	customer_common "github.com/io-m/app-hyphen/internal/customer"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/types"
@@ -27,6 +28,7 @@ func ConfigureRoutes(config *types.AppConfig) {
 	config.Mux.Route(constants.BASE_ROUTE, func(r chi.Router) {
 		config.Router = r
 		/* ROUTES COME HERE*/
+		auth_routes.SetAndRunAuthRoutes(config)
 		customer_common.SetAndRunCustomerRoutes(config)
 	})
 }

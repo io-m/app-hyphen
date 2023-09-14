@@ -10,11 +10,14 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	di "github.com/io-m/app-hyphen/internal"
+	address_repository "github.com/io-m/app-hyphen/internal/address/repository"
+	customer_repository "github.com/io-m/app-hyphen/internal/customer/repository"
 	"github.com/io-m/app-hyphen/internal/tokens"
 	"github.com/io-m/app-hyphen/pkg/constants"
 	"github.com/io-m/app-hyphen/pkg/helpers"
 	"github.com/io-m/app-hyphen/pkg/postgres"
 	hyphen_redis "github.com/io-m/app-hyphen/pkg/redis"
+	"github.com/io-m/app-hyphen/pkg/repositories"
 	"github.com/io-m/app-hyphen/pkg/types"
 	"golang.org/x/exp/slog"
 )
@@ -48,12 +51,18 @@ func main() {
 
 	protector := tokens.NewProtector()
 	mux := chi.NewRouter()
+	repositories := &repositories.AppRepositories{
+		AddressRepository:  address_repository.NewAddressRepository(postgresConnection, redisClient),
+		CustomerRepository: customer_repository.NewCustomerRepository(postgresConnection, redisClient),
+	}
+	// Global singleton
 	config := &types.AppConfig{
-		Mux:         mux,
-		Protector:   protector,
-		Tokens:      tokens.NewTokens(redisClient),
-		Postgres:    postgresConnection,
-		RedisClient: redisClient,
+		Mux:          mux,
+		Protector:    protector,
+		Tokens:       tokens.NewTokens(redisClient),
+		Postgres:     postgresConnection,
+		RedisClient:  redisClient,
+		Repositories: repositories,
 	}
 
 	port := os.Getenv(constants.APP_PORT)

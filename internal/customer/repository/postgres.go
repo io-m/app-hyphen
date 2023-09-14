@@ -1,4 +1,4 @@
-package customer_db_adapter
+package customer_repository
 
 import (
 	"context"
