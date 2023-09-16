@@ -46,7 +46,7 @@ func main() {
 		}
 	}()
 
-	// Global singleton - not able to change except router
+	// Global singleton
 	appConfig := shared.NewAppConfig(postgresConnection, redisClient)
 
 	port := os.Getenv(constants.APP_PORT)

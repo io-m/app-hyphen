@@ -31,7 +31,7 @@ func (db *customerRepository) FindCustomerByEmail(ctx context.Context, email str
 
 func (db *customerRepository) FindCustomerById(ctx context.Context, customerId uuid.UUID) (*customer.Customer, error) {
 	var customer customer.Customer
-	err := db.postgres.Get(&customer, findCustomerById, customerId)
+	err := db.postgres.GetContext(ctx, &customer, findCustomerById, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (db *customerRepository) UpdateCustomerById(ctx context.Context, customerId
 		return nil, err
 	}
 
-	_, err = db.postgres.NamedExec(query, args)
+	_, err = db.postgres.NamedExecContext(ctx, query, args)
 	if err != nil {
 		return nil, err
 	}

@@ -3,8 +3,8 @@ package address_usecase_interface
 import (
 	"context"
 
-	address "github.com/io-m/app-hyphen/internal/address/domain/entity"
-	address_objects "github.com/io-m/app-hyphen/internal/address/domain/objects"
+	address "github.com/io-m/app-hyphen/internal/features/address/domain/entity"
+	address_objects "github.com/io-m/app-hyphen/internal/features/address/domain/objects"
 )
 
 type IAddressUsecase interface {
