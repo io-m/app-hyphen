@@ -5,7 +5,6 @@ import (
 	"errors"
 	"os"
 
-	address_repository_interface "github.com/io-m/app-hyphen/internal/features/address/interface/repository"
 	person "github.com/io-m/app-hyphen/internal/features/person/domain/entity"
 	person_objects "github.com/io-m/app-hyphen/internal/features/person/domain/objects"
 	person_repository_interface "github.com/io-m/app-hyphen/internal/features/person/interface/repository"
@@ -14,15 +13,13 @@ import (
 )
 
 type authUsecase struct {
-	addressRepository  address_repository_interface.IAddressRepository
 	personRepository   person_repository_interface.IPersonRepository
 	accessTokenSecret  string
 	refreshTokenSecret string
 }
 
-func NewAuthUsecase(addressRepository address_repository_interface.IAddressRepository, personRepository person_repository_interface.IPersonRepository) *authUsecase {
+func NewAuthUsecase(personRepository person_repository_interface.IPersonRepository) *authUsecase {
 	return &authUsecase{
-		addressRepository:  addressRepository,
 		personRepository:   personRepository,
 		accessTokenSecret:  os.Getenv(constants.ACCESS_TOKEN_SECRET_KEY),
 		refreshTokenSecret: os.Getenv(constants.REFRESH_TOKEN_SECRET_KEY),
@@ -47,7 +44,7 @@ func (au *authUsecase) Register(ctx context.Context, personRequest *person_objec
 		return nil, err
 	}
 	personRequest.Password = hashedPassword
-	createdAddress, err := au.addressRepository.CreateAddress(ctx, personRequest.Address)
+	createdAddress, err := au.personRepository.CreateAddress(ctx, personRequest.Address)
 	if err != nil {
 		return nil, err
 	}

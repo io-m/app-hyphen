@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	person "github.com/io-m/app-hyphen/internal/features/person/domain/entity"
 	person_objects "github.com/io-m/app-hyphen/internal/features/person/domain/objects"
+	"github.com/io-m/app-hyphen/internal/shared/types"
 )
 
 //go:embed queries/find_person_by_id.sql
@@ -59,6 +60,10 @@ func (db *personRepository) UpdatePersonById(ctx context.Context, personId uuid.
 // TODO: implement
 func (db *personRepository) DeletePersonById(ctx context.Context, personId uuid.UUID) (bool, error) {
 	return false, nil
+}
+
+func (db *personRepository) CreateAddress(ctx context.Context, addressRequest *types.AddressRequest) (*types.Address, error) {
+	return nil, nil
 }
 
 func buildUpdateSQL(personId uuid.UUID, personRequest *person_objects.PersonRequestOptional) (string, map[string]interface{}, error) {

@@ -8,7 +8,7 @@ import (
 )
 
 func SetAndRunAuthRoutes(config *shared.AppConfig) {
-	authUsecase := auth_usecase.NewAuthUsecase(config.GetAddressRepository(), config.GetPersonRepository())
+	authUsecase := auth_usecase.NewAuthUsecase(config.GetPersonRepository())
 	authHandler := auth_http_adapter.NewAuthHandler(authUsecase, config.GetTokens(), config.GetProtector())
 
 	/* AUTH ROUTES */

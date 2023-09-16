@@ -9,7 +9,7 @@ import (
 )
 
 func SetAndRunPersonRoutes(config *shared.AppConfig) {
-	personUsecase := person_usecase_adapter.NewPersonUsecase(config.GetAddressRepository(), config.GetPersonRepository(), config.GetTokens())
+	personUsecase := person_usecase_adapter.NewPersonUsecase(config.GetPersonRepository(), config.GetTokens())
 	personHandler := person_http_adapter.NewPersonHandler(personUsecase, config.GetProtector())
 
 	/* PERSON ROUTES */

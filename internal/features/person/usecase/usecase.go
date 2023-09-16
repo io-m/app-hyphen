@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	address_repository "github.com/io-m/app-hyphen/internal/features/address/interface/repository"
 	person "github.com/io-m/app-hyphen/internal/features/person/domain/entity"
 	person_objects "github.com/io-m/app-hyphen/internal/features/person/domain/objects"
 	person_repository_interface "github.com/io-m/app-hyphen/internal/features/person/interface/repository"
@@ -14,14 +13,12 @@ import (
 )
 
 type personUsecase struct {
-	addressRepo   address_repository.IAddressRepository
 	personRepo    person_repository_interface.IPersonRepository
 	authenticator tokens.ITokens
 }
 
-func NewPersonUsecase(addressRepo address_repository.IAddressRepository, personRepo person_repository_interface.IPersonRepository, authenticator tokens.ITokens) *personUsecase {
+func NewPersonUsecase(personRepo person_repository_interface.IPersonRepository, authenticator tokens.ITokens) *personUsecase {
 	return &personUsecase{
-		addressRepo:   addressRepo,
 		personRepo:    personRepo,
 		authenticator: authenticator,
 	}

@@ -1,4 +1,4 @@
-package address
+package types
 
 type Address struct {
 	Id          string  `json:"id" db:"id"`
@@ -12,4 +12,17 @@ type Address struct {
 	ExtraInfo   *string `json:"extra_info,omitempty" db:"extra_info"`
 	CreatedAt   *string `json:"created_at,omitempty" db:"created_at"`
 	UpdatedAt   *string `json:"updated_at,omitempty" db:"updated_at"`
+}
+
+type AddressRequest struct {
+	StreetName  string  `json:"street_name"`
+	HouseNumber string  `json:"house_number"`
+	City        string  `json:"city"`
+	ZipCode     string  `json:"zip_code"`
+	Country     string  `json:"country"`
+	State       *string `json:"state,omitempty"`
+	Region      *string `json:"region,omitempty"`
+	ExtraInfo   *string `json:"extra_info,omitempty"`
+	CreatedAt   *string `json:"created_at"`
+	UpdatedAt   *string `json:"updated_at,omitempty"`
 }

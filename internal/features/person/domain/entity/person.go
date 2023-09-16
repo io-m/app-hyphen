@@ -2,7 +2,7 @@ package person
 
 import (
 	"github.com/google/uuid"
-	address "github.com/io-m/app-hyphen/internal/features/address/domain/entity"
+	"github.com/io-m/app-hyphen/internal/shared/types"
 )
 
 type Person struct {
@@ -11,7 +11,7 @@ type Person struct {
 	LastName  string    `json:"last_name" db:"last_name"`
 	Email     string    `json:"email" db:"email"`
 	Password  string    `json:"password" db:"password"`
-	Address   *address.Address
+	Address   *types.Address
 	CreatedAt *string `json:"created_at,omitempty" db:"created_at"`
 	UpdatedAt *string `json:"updated_at,omitempty" db:"updated_at"`
 }

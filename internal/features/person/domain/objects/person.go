@@ -3,32 +3,31 @@ package person_objects
 import (
 	"time"
 
-	address "github.com/io-m/app-hyphen/internal/features/address/domain/entity"
-	address_objects "github.com/io-m/app-hyphen/internal/features/address/domain/objects"
 	person "github.com/io-m/app-hyphen/internal/features/person/domain/entity"
+	"github.com/io-m/app-hyphen/internal/shared/types"
 	"github.com/io-m/app-hyphen/internal/tokens"
 
 	"github.com/google/uuid"
 )
 
 type PersonRequest struct {
-	FirstName string                          `json:"first_name"`
-	LastName  string                          `json:"last_name"`
-	Email     string                          `json:"email"`
-	Password  string                          `json:"password"`
-	Address   *address_objects.AddressRequest `json:"address"`
-	Role      tokens.AuthorizationLevel       `json:"role"`
+	FirstName string                    `json:"first_name"`
+	LastName  string                    `json:"last_name"`
+	Email     string                    `json:"email"`
+	Password  string                    `json:"password"`
+	Address   *types.AddressRequest     `json:"address"`
+	Role      tokens.AuthorizationLevel `json:"role"`
 }
 
 type PersonRequestOptional struct {
-	FirstName   *string                         `json:"first_name,omitempty"`
-	LastName    *string                         `json:"last_name,omitempty"`
-	Email       *string                         `json:"email,omitempty"`
-	OldPassword *string                         `json:"old_password,omitempty"`
-	NewPassword *string                         `json:"new_password,omitempty"`
-	Address     *address_objects.AddressRequest `json:"address,omitempty"`
-	Role        *tokens.AuthorizationLevel      `json:"role,omitempty"`
-	UpdatedAt   *string                         `json:"updated_at,omitempty"`
+	FirstName   *string                    `json:"first_name,omitempty"`
+	LastName    *string                    `json:"last_name,omitempty"`
+	Email       *string                    `json:"email,omitempty"`
+	OldPassword *string                    `json:"old_password,omitempty"`
+	NewPassword *string                    `json:"new_password,omitempty"`
+	Address     *types.AddressRequest      `json:"address,omitempty"`
+	Role        *tokens.AuthorizationLevel `json:"role,omitempty"`
+	UpdatedAt   *string                    `json:"updated_at,omitempty"`
 }
 
 type LoginPersonRequest struct {
@@ -48,14 +47,14 @@ type PersonResponse struct {
 	FirstName string                    `json:"first_name,omitempty"`
 	LastName  string                    `json:"last_name,omitempty"`
 	Email     string                    `json:"email,omitempty"`
-	Address   *address.Address          `json:"address,omitempty"`
+	Address   *types.Address            `json:"address,omitempty"`
 	Role      tokens.AuthorizationLevel `json:"role,omitempty"`
 	CreatedAt *string                   `json:"created_at,omitempty"`
 	UpdatedAt *string                   `json:"updated_at,omitempty"`
 }
 
 // MapPersonRequestToPerson receives PersonRequest and makes full Person out of it in order to save it into DB
-func MapPersonRequestToPerson(personRequest *PersonRequest, address *address.Address) *person.Person {
+func MapPersonRequestToPerson(personRequest *PersonRequest, address *types.Address) *person.Person {
 	return &person.Person{
 		Id:        uuid.New(),
 		FirstName: personRequest.FirstName,

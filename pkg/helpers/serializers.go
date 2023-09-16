@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/io-m/app-hyphen/internal/shared/types"
 	"github.com/io-m/app-hyphen/pkg/constants"
-	"github.com/io-m/app-hyphen/pkg/types"
 )
 
 // Decodes received payload from the client. Allows up to 1MB of payload size
