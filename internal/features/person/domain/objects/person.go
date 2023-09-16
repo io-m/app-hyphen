@@ -1,17 +1,17 @@
-package customer_objects
+package person_objects
 
 import (
 	"time"
 
 	address "github.com/io-m/app-hyphen/internal/features/address/domain/entity"
 	address_objects "github.com/io-m/app-hyphen/internal/features/address/domain/objects"
-	customer "github.com/io-m/app-hyphen/internal/features/customer/domain/entity"
+	person "github.com/io-m/app-hyphen/internal/features/person/domain/entity"
 	"github.com/io-m/app-hyphen/internal/tokens"
 
 	"github.com/google/uuid"
 )
 
-type CustomerRequest struct {
+type PersonRequest struct {
 	FirstName string                          `json:"first_name"`
 	LastName  string                          `json:"last_name"`
 	Email     string                          `json:"email"`
@@ -20,7 +20,7 @@ type CustomerRequest struct {
 	Role      tokens.AuthorizationLevel       `json:"role"`
 }
 
-type CustomerRequestOptional struct {
+type PersonRequestOptional struct {
 	FirstName   *string                         `json:"first_name,omitempty"`
 	LastName    *string                         `json:"last_name,omitempty"`
 	Email       *string                         `json:"email,omitempty"`
@@ -31,19 +31,19 @@ type CustomerRequestOptional struct {
 	UpdatedAt   *string                         `json:"updated_at,omitempty"`
 }
 
-type LoginCustomerRequest struct {
+type LoginPersonRequest struct {
 	Id       uuid.UUID `json:"id"`
 	Email    string    `json:"email"`
 	Password string    `json:"password"`
 }
 
-type LoginCustomerResponse struct {
-	AccessToken          string            `json:"access_token"`
-	AccessTokenExpiresAt time.Time         `json:"access_token_expires_at"`
-	Customer             customer.Customer `json:"customer"`
+type LoginPersonResponse struct {
+	AccessToken          string        `json:"access_token"`
+	AccessTokenExpiresAt time.Time     `json:"access_token_expires_at"`
+	Person               person.Person `json:"person"`
 }
 
-type CustomerResponse struct {
+type PersonResponse struct {
 	Id        uuid.UUID                 `json:"id"`
 	FirstName string                    `json:"first_name,omitempty"`
 	LastName  string                    `json:"last_name,omitempty"`
@@ -54,27 +54,27 @@ type CustomerResponse struct {
 	UpdatedAt *string                   `json:"updated_at,omitempty"`
 }
 
-// MapCreateCustomerRequestToCustomer receives CustomerRequest and makes full Customer out of it in order to save it into DB
-func MapCustomerRequestToCustomer(customerRequest *CustomerRequest, address *address.Address) *customer.Customer {
-	return &customer.Customer{
+// MapPersonRequestToPerson receives PersonRequest and makes full Person out of it in order to save it into DB
+func MapPersonRequestToPerson(personRequest *PersonRequest, address *address.Address) *person.Person {
+	return &person.Person{
 		Id:        uuid.New(),
-		FirstName: customerRequest.FirstName,
-		LastName:  customerRequest.LastName,
-		Password:  customerRequest.Password,
-		Email:     customerRequest.Email,
+		FirstName: personRequest.FirstName,
+		LastName:  personRequest.LastName,
+		Password:  personRequest.Password,
+		Email:     personRequest.Email,
 		Address:   address,
 	}
 }
 
-// MapCreateCustomerRequestToCustomer receives CustomerRequest and makes full Customer out of it in order to save it into DB
-func MapCustomerToCustomerResponse(customer *customer.Customer) *CustomerResponse {
-	return &CustomerResponse{
-		Id:        customer.Id,
-		FirstName: customer.FirstName,
-		LastName:  customer.LastName,
-		Email:     customer.Email,
-		Address:   customer.Address,
-		CreatedAt: customer.CreatedAt,
-		UpdatedAt: customer.UpdatedAt,
+// MapPersonToPersonResponse receives PersonRequest and makes full Person out of it in order to save it into DB
+func MapPersonToPersonResponse(person *person.Person) *PersonResponse {
+	return &PersonResponse{
+		Id:        person.Id,
+		FirstName: person.FirstName,
+		LastName:  person.LastName,
+		Email:     person.Email,
+		Address:   person.Address,
+		CreatedAt: person.CreatedAt,
+		UpdatedAt: person.UpdatedAt,
 	}
 }

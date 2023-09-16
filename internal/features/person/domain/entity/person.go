@@ -1,11 +1,11 @@
-package customer
+package person
 
 import (
 	"github.com/google/uuid"
 	address "github.com/io-m/app-hyphen/internal/features/address/domain/entity"
 )
 
-type Customer struct {
+type Person struct {
 	Id        uuid.UUID `json:"id" db:"id"`
 	FirstName string    `json:"first_name" db:"first_name"`
 	LastName  string    `json:"last_name" db:"last_name"`
