@@ -1,1 +1,0 @@
-package booking_memory_adapter

@@ -15,8 +15,12 @@ func SetAndRunAuthRoutes(config *shared.AppConfig) {
 	config.GetRouter().Route("/auth", func(r chi.Router) {
 		r.Post("/register", authHandler.Register)
 		r.Post("/login", authHandler.Login)
-		r.Post("/oauth", authHandler.OAuth)
 		r.Post("/refresh-tokens", authHandler.RefreshToken)
+		r.Put("/password-reset", authHandler.RefreshToken) // TODO: Implement real handler
+		r.Route("/oauth", func(r chi.Router) {
+			r.Get("/{provider}/login", authHandler.OAuth)    // TODO: Implement real handler
+			r.Get("/{provider}/callback", authHandler.OAuth) // TODO: Implement real handler
+		})
 
 	})
 }

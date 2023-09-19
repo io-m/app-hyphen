@@ -1,1 +1,0 @@
-package booking_http_adapter
